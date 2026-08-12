@@ -96,6 +96,12 @@ export default function CompanySetupScreen() {
       </View>
       <BusinessProfileFields values={form} onChange={(p) => setForm((f) => ({ ...f, ...p }))} onPickLogo={pickLogo} />
       <Button title="Continue to Dashboard" onPress={handleSave} loading={loading} />
+      <Button
+        title="Restore from backup file instead"
+        onPress={() => router.replace('/onboarding/restore')}
+        variant="ghost"
+        style={styles.restoreLink}
+      />
     </ScreenLayout>
   );
 }
@@ -104,4 +110,5 @@ const styles = StyleSheet.create({
   header: { alignItems: 'center', marginBottom: spacing.lg },
   headerTitle: { ...typography.title, color: colors.onSurface, marginTop: spacing.sm },
   headerSub: { ...typography.bodySm, color: colors.onSurfaceVariant, textAlign: 'center' },
+  restoreLink: { marginTop: spacing.md },
 });

@@ -39,17 +39,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function init() {
-      await getDatabase();
-      const pinExists = await hasPin();
-      const bio = await LocalAuthentication.hasHardwareAsync();
-      const enrolled = await LocalAuthentication.isEnrolledAsync();
-      setBiometricAvailable(bio && enrolled);
-      setBiometricEnabledState(await isBiometricEnabled());
-      await refreshOnboarding();
-      setState(pinExists ? 'locked' : 'no_pin');
+      try {
+        await getDatabase();
+        const pinExists = await hasPin();
+        const bio = await LocalAuthentication.hasHardwareAsync();
+        const enrolled = await LocalAuthentication.isEnrolledAsync();
+        if (cancelled) return;
+        setBiometricAvailable(bio && enrolled);
+        setBiometricEnabledState(await isBiometricEnabled());
+        await refreshOnboarding();
+        if (cancelled) return;
+        setState(pinExists ? 'locked' : 'no_pin');
+      } catch (e) {
+        console.error('Auth init failed', e);
+        if (!cancelled) {
+          // Fail open so the splash never hangs forever.
+          setState('no_pin');
+        }
+      }
     }
-    init();
+
+    void init();
+    return () => {
+      cancelled = true;
+    };
   }, [refreshOnboarding]);
 
   const unlock = async (pin: string) => {

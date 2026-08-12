@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useRootNavigationState } from 'expo-router';
 import { AppLogo } from '../src/components/ui/AppLogo';
 import { useAuth } from '../src/context/AuthContext';
 import { colors, spacing } from '../src/theme';
@@ -8,9 +8,13 @@ import { colors, spacing } from '../src/theme';
 export default function Index() {
   const { state, isOnboarded } = useAuth();
   const router = useRouter();
+  const navState = useRootNavigationState();
 
   useEffect(() => {
+    // Expo Router can drop replace() if the root navigator is not ready yet.
+    if (!navState?.key) return;
     if (state === 'loading') return;
+
     if (state === 'no_pin') {
       router.replace('/auth/create-pin');
       return;
@@ -20,11 +24,11 @@ export default function Index() {
       return;
     }
     if (!isOnboarded) {
-      router.replace('/onboarding/company-setup');
+      router.replace('/onboarding/restore-choice');
       return;
     }
     router.replace('/(tabs)');
-  }, [state, isOnboarded, router]);
+  }, [state, isOnboarded, router, navState?.key]);
 
   return (
     <View style={styles.container}>

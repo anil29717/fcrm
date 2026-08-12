@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { getPhases, savePhase, togglePhaseComplete, deletePhase, reorderPhases } from '../../../src/db/queries';
-import type { ProjectPhase } from '../../../src/types';
-import { ListScreenLayout } from '../../../src/components/ui/ScreenLayout';
-import { InvalidProjectFallback } from '../../../src/components/ui/InvalidProjectFallback';
-import { useProjectId } from '../../../src/hooks/useProjectId';
-import { colors, spacing, typography, radius } from '../../../src/theme';
+import { getPhases, savePhase, togglePhaseComplete, deletePhase, reorderPhases } from '../../../../src/db/queries';
+import type { ProjectPhase } from '../../../../src/types';
+import { ListScreenLayout } from '../../../../src/components/ui/ScreenLayout';
+import { InvalidProjectFallback } from '../../../../src/components/ui/InvalidProjectFallback';
+import { useProjectId } from '../../../../src/hooks/useProjectId';
+import { colors, spacing, typography, radius } from '../../../../src/theme';
 
 export default function ProjectPhasesScreen() {
   const projectId = useProjectId();
@@ -85,11 +85,13 @@ export default function ProjectPhasesScreen() {
   };
 
   const openPhase = (phase: ProjectPhase) => {
-    try {
-      router.push(`/phase/${phase.id}`);
-    } catch (e) {
-      Alert.alert('Error', e instanceof Error ? e.message : 'Could not open phase');
-    }
+    router.push({
+      pathname: '/projects/[id]/phase/[phaseId]',
+      params: {
+        id: String(projectId),
+        phaseId: String(phase.id),
+      },
+    });
   };
 
   const movePhase = async (index: number, direction: -1 | 1) => {

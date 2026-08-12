@@ -102,6 +102,10 @@ export async function runMigrations(db: SQLite.SQLiteDatabase): Promise<void> {
   // ─── Compliance docs ───────────────────────────────────────────────────────
   await addColumn(db, 'compliance_doc', 'doc_type', 'TEXT');
 
+  // ─── Invoice signature ───────────────────────────────────────────────────
+  await addColumn(db, 'company', 'signature_mode', "TEXT DEFAULT 'computer_generated'");
+  await addColumn(db, 'company', 'signature_path', 'TEXT');
+
   // ─── New tables ──────────────────────────────────────────────────────────
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS contact_persons (

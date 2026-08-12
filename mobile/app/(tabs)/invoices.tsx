@@ -39,11 +39,7 @@ export default function InvoicesScreen() {
   }, [search, load]);
 
   const openNewInvoice = () => {
-    try {
-      router.push('/invoices/new');
-    } catch (e) {
-      Alert.alert('Error', e instanceof Error ? e.message : 'Could not open invoice form');
-    }
+    router.push('/invoices/create');
   };
 
   if (invoices.length === 0 && !search) {

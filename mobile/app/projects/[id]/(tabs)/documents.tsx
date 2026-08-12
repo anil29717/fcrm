@@ -13,15 +13,15 @@ import { useFocusEffect } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Dropdown } from '../../../src/components/ui/Dropdown';
-import { DOCUMENT_CATEGORY_OPTIONS } from '../../../src/constants/options';
-import { ListScreenLayout } from '../../../src/components/ui/ScreenLayout';
-import { InvalidProjectFallback } from '../../../src/components/ui/InvalidProjectFallback';
-import { useProjectId } from '../../../src/hooks/useProjectId';
-import { getDocuments, saveDocument, deleteDocument } from '../../../src/db/queries';
-import type { ProjectDocument } from '../../../src/types';
-import { copyToAppStorage, deleteLocalFile, getProjectDocsDir } from '../../../src/utils/files';
-import { colors, spacing, typography, radius } from '../../../src/theme';
+import { Dropdown } from '../../../../src/components/ui/Dropdown';
+import { DOCUMENT_CATEGORY_OPTIONS } from '../../../../src/constants/options';
+import { ListScreenLayout } from '../../../../src/components/ui/ScreenLayout';
+import { InvalidProjectFallback } from '../../../../src/components/ui/InvalidProjectFallback';
+import { useProjectId } from '../../../../src/hooks/useProjectId';
+import { getDocuments, saveDocument, deleteDocument } from '../../../../src/db/queries';
+import type { ProjectDocument } from '../../../../src/types';
+import { copyToAppStorage, deleteLocalFile, getProjectDocsDir } from '../../../../src/utils/files';
+import { colors, spacing, typography, radius } from '../../../../src/theme';
 
 export default function ProjectDocumentsScreen() {
   const projectId = useProjectId();

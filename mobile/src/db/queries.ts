@@ -66,6 +66,11 @@ export async function saveCompany(data: CompanyProfileInput): Promise<number> {
     invoice_number_format: data.invoice_number_format ?? existing?.invoice_number_format ?? '{prefix}-{FY}-{seq}',
     invoice_next_number: data.invoice_next_number ?? existing?.invoice_next_number ?? 1,
     invoice_reset_frequency: data.invoice_reset_frequency ?? existing?.invoice_reset_frequency ?? 'never',
+    signature_mode: data.signature_mode ?? existing?.signature_mode ?? 'computer_generated',
+    signature_path:
+      data.signature_path !== undefined
+        ? data.signature_path
+        : (existing?.signature_path ?? null),
   };
 
   if (existing) {
@@ -73,7 +78,8 @@ export async function saveCompany(data: CompanyProfileInput): Promise<number> {
       `UPDATE company SET name=?, short_code=?, owner_name=?, address=?, logo_path=?, business_type=?, industry=?,
        email=?, phone=?, gstin=?, pan=?, msme_number=?, website=?, currency=?, financial_year_start_month=?,
        invoice_prefix=?, default_payment_terms=?, bank_account_name=?, bank_account_number=?, bank_ifsc=?,
-       upi_id=?, payment_link=?, invoice_number_format=?, invoice_next_number=?, invoice_reset_frequency=?, updated_at=? WHERE id=?`,
+       upi_id=?, payment_link=?, invoice_number_format=?, invoice_next_number=?, invoice_reset_frequency=?,
+       signature_mode=?, signature_path=?, updated_at=? WHERE id=?`,
       [
         fields.name, fields.short_code, fields.owner_name, fields.address, fields.logo_path,
         fields.business_type, fields.industry, fields.email, fields.phone, fields.gstin, fields.pan,
@@ -81,6 +87,7 @@ export async function saveCompany(data: CompanyProfileInput): Promise<number> {
         fields.invoice_prefix, fields.default_payment_terms, fields.bank_account_name,
         fields.bank_account_number, fields.bank_ifsc, fields.upi_id, fields.payment_link,
         fields.invoice_number_format, fields.invoice_next_number, fields.invoice_reset_frequency,
+        fields.signature_mode, fields.signature_path,
         ts, existing.id,
       ],
     );
@@ -91,15 +98,16 @@ export async function saveCompany(data: CompanyProfileInput): Promise<number> {
     `INSERT INTO company (name, short_code, owner_name, address, logo_path, business_type, industry, email, phone,
      gstin, pan, msme_number, website, currency, financial_year_start_month, invoice_prefix, default_payment_terms,
      bank_account_name, bank_account_number, bank_ifsc, upi_id, payment_link, invoice_number_format,
-     invoice_next_number, invoice_reset_frequency, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     invoice_next_number, invoice_reset_frequency, signature_mode, signature_path, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       fields.name, fields.short_code, fields.owner_name, fields.address, fields.logo_path,
       fields.business_type, fields.industry, fields.email, fields.phone, fields.gstin, fields.pan,
       fields.msme_number, fields.website, fields.currency, fields.financial_year_start_month,
       fields.invoice_prefix, fields.default_payment_terms, fields.bank_account_name,
       fields.bank_account_number, fields.bank_ifsc, fields.upi_id, fields.payment_link,
-      fields.invoice_number_format, fields.invoice_next_number, fields.invoice_reset_frequency, ts, ts,
+      fields.invoice_number_format, fields.invoice_next_number, fields.invoice_reset_frequency,
+      fields.signature_mode, fields.signature_path, ts, ts,
     ],
   );
   return result.lastInsertRowId;
@@ -767,20 +775,60 @@ export async function updateTemplateBlocks(blocks: TemplateBlock[]): Promise<voi
 export async function getDashboardStats(): Promise<DashboardStats> {
   const db = await getDatabase();
   const clients = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM clients');
-  const projects = await db.getFirstAsync<{ count: number }>(
-    "SELECT COUNT(*) as count FROM projects WHERE status IN ('active', 'in_progress')",
+  const activeProjects = await db.getFirstAsync<{ count: number }>(
+    "SELECT COUNT(*) as count FROM projects WHERE status IN ('active', 'in_progress', 'not_started', 'on_hold')",
   );
-  const received = await db.getFirstAsync<{ total: number }>(
+  const allProjects = await db.getFirstAsync<{ count: number }>(
+    "SELECT COUNT(*) as count FROM projects WHERE status != 'cancelled'",
+  );
+  const valuation = await db.getFirstAsync<{ total: number }>(
+    "SELECT COALESCE(SUM(project_value), 0) as total FROM projects WHERE status != 'cancelled'",
+  );
+
+  // Prefer actual payment records when present; fall back to paid invoices.
+  const payments = await db.getFirstAsync<{ total: number; count: number }>(
+    'SELECT COALESCE(SUM(amount), 0) as total, COUNT(*) as count FROM payment_records',
+  );
+  const paidInvoices = await db.getFirstAsync<{ total: number }>(
     "SELECT COALESCE(SUM(total), 0) as total FROM invoices WHERE status = 'paid'",
   );
+  const paidMilestones = await db.getFirstAsync<{ total: number }>(
+    "SELECT COALESCE(SUM(amount), 0) as total FROM milestones WHERE due_status = 'paid'",
+  );
+
+  const receivedFromPayments = payments?.count ? (payments.total ?? 0) : 0;
+  const receivedFromInvoices = paidInvoices?.total ?? 0;
+  const receivedFromMilestones = paidMilestones?.total ?? 0;
+  // Use the strongest available signal without double-counting when possible.
+  const totalReceived = receivedFromPayments > 0
+    ? receivedFromPayments
+    : Math.max(receivedFromInvoices, receivedFromMilestones);
+
   const pending = await db.getFirstAsync<{ total: number }>(
     "SELECT COALESCE(SUM(total), 0) as total FROM invoices WHERE status IN ('pending', 'partial', 'sent', 'draft', 'overdue')",
   );
+  const invoiced = await db.getFirstAsync<{ total: number }>(
+    "SELECT COALESCE(SUM(total), 0) as total FROM invoices WHERE status != 'cancelled'",
+  );
+
+  const totalValuation = valuation?.total ?? 0;
+  const totalPending = pending?.total ?? 0;
+  const totalInvoiced = invoiced?.total ?? 0;
+  const amountRemaining = Math.max(0, totalValuation - totalReceived);
+  const collectionRate = totalValuation > 0
+    ? Math.min(100, (totalReceived / totalValuation) * 100)
+    : 0;
+
   return {
     totalClients: clients?.count ?? 0,
-    activeProjects: projects?.count ?? 0,
-    totalReceived: received?.total ?? 0,
-    totalPending: pending?.total ?? 0,
+    activeProjects: activeProjects?.count ?? 0,
+    totalProjects: allProjects?.count ?? 0,
+    totalValuation,
+    totalReceived,
+    totalPending,
+    totalInvoiced,
+    amountRemaining,
+    collectionRate,
   };
 }
 
@@ -841,6 +889,18 @@ export async function exportBackupData(): Promise<object> {
   const milestones = await db.getAllAsync('SELECT * FROM milestones');
   const changeRequests = await db.getAllAsync('SELECT * FROM change_requests');
   const phases = await db.getAllAsync('SELECT * FROM project_phases');
+
+  let phaseTasks: object[] = [];
+  let paymentRecords: object[] = [];
+  let projectHistory: object[] = [];
+  let invoiceSequences: object[] = [];
+  let templateBlocks: object[] = [];
+  try { phaseTasks = await db.getAllAsync('SELECT * FROM phase_tasks'); } catch { /* */ }
+  try { paymentRecords = await db.getAllAsync('SELECT * FROM payment_records'); } catch { /* */ }
+  try { projectHistory = await db.getAllAsync('SELECT * FROM project_history'); } catch { /* */ }
+  try { invoiceSequences = await db.getAllAsync('SELECT * FROM invoice_sequences'); } catch { /* */ }
+  try { templateBlocks = await db.getAllAsync('SELECT * FROM invoice_template_blocks'); } catch { /* */ }
+
   return {
     exported_at: now(),
     company,
@@ -852,7 +912,166 @@ export async function exportBackupData(): Promise<object> {
     phases,
     contact_persons: await db.getAllAsync('SELECT * FROM contact_persons'),
     env_values: await db.getAllAsync('SELECT id, project_id, key_name, environment, notes, created_at FROM project_env_values'),
+    phase_tasks: phaseTasks,
+    payment_records: paymentRecords,
+    project_history: projectHistory,
+    invoice_sequences: invoiceSequences,
+    invoice_template_blocks: templateBlocks,
   };
+}
+
+type Row = Record<string, unknown>;
+
+const MONGO_META = new Set(['_id', '__v']);
+
+function sanitizeRow(row: Row): Row {
+  const out: Row = {};
+  for (const [k, v] of Object.entries(row)) {
+    if (MONGO_META.has(k)) continue;
+    // Atlas may nest ObjectId-like values; keep primitives only
+    if (v !== null && typeof v === 'object' && !Array.isArray(v)) continue;
+    out[k] = v;
+  }
+  return out;
+}
+
+function cols(row: Row, keys: string[]): (string | number | null)[] {
+  return keys.map((k) => {
+    const v = row[k];
+    if (v === undefined || v === null) return null;
+    if (typeof v === 'string' || typeof v === 'number') return v;
+    if (typeof v === 'boolean') return v ? 1 : 0;
+    return String(v);
+  });
+}
+
+async function insertRows(
+  db: Awaited<ReturnType<typeof getDatabase>>,
+  table: string,
+  rows: Row[],
+  required: string[],
+  ensureTimestamps: boolean,
+): Promise<number> {
+  let count = 0;
+  for (const raw of rows) {
+    const row = sanitizeRow(raw);
+    if (!required.every((k) => row[k] != null && String(row[k]).length > 0)) continue;
+    if (ensureTimestamps) {
+      if (row.created_at == null) row.created_at = now();
+      if (table === 'clients' || table === 'projects' || table === 'invoices') {
+        if (row.updated_at == null) row.updated_at = now();
+      }
+    }
+    const keys = Object.keys(row);
+    if (!keys.length) continue;
+    await db.runAsync(
+      `INSERT OR REPLACE INTO ${table} (${keys.join(',')}) VALUES (${keys.map(() => '?').join(',')})`,
+      cols(row, keys),
+    );
+    count += 1;
+  }
+  return count;
+}
+
+/** Import a backup payload into the local DB (file or cloud restore). */
+export async function importBackupData(payload: {
+  company?: Row | null;
+  clients?: Row[];
+  projects?: Row[];
+  invoices?: Row[];
+  milestones?: Row[];
+  change_requests?: Row[];
+  phases?: Row[];
+  contact_persons?: Row[];
+  phase_tasks?: Row[];
+  payment_records?: Row[];
+  project_history?: Row[];
+  invoice_sequences?: Row[];
+  invoice_template_blocks?: Row[];
+  env_values?: Row[];
+}): Promise<{ clients: number; projects: number; invoices: number }> {
+  const db = await getDatabase();
+  let clients = 0;
+  let projects = 0;
+  let invoices = 0;
+
+  await db.execAsync('PRAGMA foreign_keys = OFF;');
+  try {
+    await db.withTransactionAsync(async () => {
+      // Clear business data (keep PIN / app_settings).
+      const tables = [
+        'payment_records',
+        'phase_tasks',
+        'project_env_values',
+        'project_history',
+        'project_documents',
+        'project_phases',
+        'change_requests',
+        'milestones',
+        'invoices',
+        'projects',
+        'contact_persons',
+        'clients',
+        'compliance_doc',
+        'company',
+        'invoice_sequences',
+      ];
+      for (const table of tables) {
+        try {
+          await db.runAsync(`DELETE FROM ${table}`);
+        } catch {
+          // table may not exist yet
+        }
+      }
+
+      if (payload.company && typeof payload.company === 'object') {
+        const company = sanitizeRow(payload.company);
+        company.name = String(company.name ?? 'Restored Business');
+        company.short_code = String(company.short_code ?? 'RST').toUpperCase();
+        if (company.signature_mode == null) company.signature_mode = 'computer_generated';
+        if (company.created_at == null) company.created_at = now();
+        if (company.updated_at == null) company.updated_at = now();
+        const keys = Object.keys(company);
+        await db.runAsync(
+          `INSERT OR REPLACE INTO company (${keys.join(',')}) VALUES (${keys.map(() => '?').join(',')})`,
+          cols(company, keys),
+        );
+      }
+
+      clients = await insertRows(db, 'clients', payload.clients ?? [], ['name'], true);
+      await insertRows(db, 'contact_persons', payload.contact_persons ?? [], ['client_id', 'name'], false);
+      projects = await insertRows(db, 'projects', payload.projects ?? [], ['name', 'client_id'], true);
+      await insertRows(db, 'project_phases', payload.phases ?? [], ['project_id', 'title'], false);
+      await insertRows(db, 'phase_tasks', payload.phase_tasks ?? [], ['phase_id', 'title'], false);
+      invoices = await insertRows(db, 'invoices', payload.invoices ?? [], ['project_id', 'invoice_number'], true);
+      await insertRows(db, 'milestones', payload.milestones ?? [], ['project_id', 'title'], true);
+      await insertRows(db, 'change_requests', payload.change_requests ?? [], ['project_id', 'description'], true);
+      await insertRows(db, 'payment_records', payload.payment_records ?? [], ['invoice_id', 'amount'], true);
+      await insertRows(db, 'project_history', payload.project_history ?? [], ['project_id', 'event_type', 'description'], true);
+      await insertRows(db, 'invoice_sequences', payload.invoice_sequences ?? [], ['financial_year'], false);
+      // Keep existing template if backup has none.
+      if ((payload.invoice_template_blocks ?? []).length > 0) {
+        try { await db.runAsync('DELETE FROM invoice_template_blocks'); } catch { /* */ }
+        await insertRows(db, 'invoice_template_blocks', payload.invoice_template_blocks ?? [], ['block_type'], false);
+      }
+      await insertRows(
+        db,
+        'project_env_values',
+        (payload.env_values ?? []).map((row) => ({
+          ...row,
+          value_encrypted: row.value_encrypted ?? '',
+          created_at: row.created_at ?? now(),
+        })),
+        ['project_id', 'key_name'],
+        true,
+      );
+    });
+  } finally {
+    await db.execAsync('PRAGMA foreign_keys = ON;');
+  }
+
+  await saveBackupLog('success', 'Data restored from backup file.');
+  return { clients, projects, invoices };
 }
 
 // ─── Env Values ──────────────────────────────────────────────────────────────

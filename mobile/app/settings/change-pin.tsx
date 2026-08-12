@@ -7,8 +7,6 @@ import { useAndroidBack } from '../../src/hooks/useAndroidBack';
 import {
   getPinLength,
   MAX_PIN_LENGTH,
-  MIN_PIN_LENGTH,
-  PIN_IDLE_MS,
   savePin,
   verifyPin,
 } from '../../src/utils/security';
@@ -20,7 +18,7 @@ export default function ChangePinScreen() {
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [error, setError] = useState('');
-  const [expectedLength, setExpectedLength] = useState<number | null>(null);
+  const [expectedLength, setExpectedLength] = useState(MAX_PIN_LENGTH);
   const router = useRouter();
   useAndroidBack('/(tabs)/settings');
 
@@ -32,32 +30,17 @@ export default function ChangePinScreen() {
   confirmRef.current = confirmPin;
 
   useEffect(() => {
-    getPinLength().then(setExpectedLength);
+    getPinLength().then((len) => setExpectedLength(len ?? MAX_PIN_LENGTH));
   }, []);
 
   useEffect(() => {
     if (step !== 'current') return;
-    if (currentPin.length < MIN_PIN_LENGTH) return;
-
-    const ready =
-      expectedLength != null
-        ? currentPin.length === expectedLength
-        : currentPin.length >= MIN_PIN_LENGTH;
-    if (!ready) return;
-
-    const delay =
-      expectedLength != null
-        ? 150
-        : currentPin.length >= MAX_PIN_LENGTH
-          ? 150
-          : PIN_IDLE_MS;
+    if (currentPin.length !== expectedLength) return;
 
     let cancelled = false;
     const timer = setTimeout(async () => {
       const pin = currentRef.current;
-      if (cancelled || pin.length < MIN_PIN_LENGTH) return;
-      if (expectedLength != null && pin.length !== expectedLength) return;
-
+      if (cancelled || pin.length !== expectedLength) return;
       const valid = await verifyPin(pin);
       if (cancelled) return;
       if (valid) {
@@ -68,7 +51,7 @@ export default function ChangePinScreen() {
         setError('Incorrect current PIN');
         setCurrentPin('');
       }
-    }, delay);
+    }, 150);
 
     return () => {
       cancelled = true;
@@ -78,27 +61,25 @@ export default function ChangePinScreen() {
 
   useEffect(() => {
     if (step !== 'new') return;
-    if (newPin.length < MIN_PIN_LENGTH) return;
+    if (newPin.length !== MAX_PIN_LENGTH) return;
 
-    const delay = newPin.length >= MAX_PIN_LENGTH ? 150 : PIN_IDLE_MS;
     const timer = setTimeout(() => {
-      const pin = newRef.current;
-      if (pin.length < MIN_PIN_LENGTH) return;
+      if (newRef.current.length !== MAX_PIN_LENGTH) return;
       setError('');
       setStep('confirm');
-    }, delay);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [step, newPin]);
 
   useEffect(() => {
     if (step !== 'confirm') return;
-    if (confirmPin.length < newPin.length || newPin.length < MIN_PIN_LENGTH) return;
+    if (confirmPin.length !== MAX_PIN_LENGTH) return;
 
     let cancelled = false;
     const timer = setTimeout(async () => {
       const pin = confirmRef.current;
-      if (cancelled || pin.length < newPin.length) return;
+      if (cancelled || pin.length !== MAX_PIN_LENGTH) return;
       if (pin === newPin) {
         await savePin(pin);
         if (!cancelled) router.back();
@@ -117,9 +98,9 @@ export default function ChangePinScreen() {
   }, [step, confirmPin, newPin, router]);
 
   const titles = {
-    current: { title: 'Current PIN', subtitle: 'Enter your current PIN' },
-    new: { title: 'New PIN', subtitle: 'Enter your new PIN (4–6 digits)' },
-    confirm: { title: 'Confirm New PIN', subtitle: 'Re-enter to confirm' },
+    current: { title: 'Current PIN', subtitle: `Enter your current ${expectedLength}-digit PIN` },
+    new: { title: 'New PIN', subtitle: 'Enter a new 6-digit PIN' },
+    confirm: { title: 'Confirm New PIN', subtitle: 'Re-enter your 6-digit PIN' },
   };
 
   const stepConfig = titles[step];
@@ -131,8 +112,7 @@ export default function ChangePinScreen() {
         ? (v: string) => { setError(''); setNewPin(v); }
         : (v: string) => { setError(''); setConfirmPin(v); };
 
-  const maxLength =
-    step === 'confirm' ? Math.max(newPin.length, MIN_PIN_LENGTH) : MAX_PIN_LENGTH;
+  const maxLength = step === 'current' ? expectedLength : MAX_PIN_LENGTH;
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>

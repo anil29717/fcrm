@@ -1,14 +1,10 @@
-import { useGlobalSearchParams } from 'expo-router';
 import { useProjectIdFromContext } from '../context/ProjectIdContext';
 
-/** Reads project id from tab layout context, or parent dynamic route params. */
+/**
+ * Project id from ProjectIdProvider only.
+ * Parent `projects/[id]/_layout` must wrap screens with ProjectIdProvider.
+ * Do not call expo-router param hooks here — that breaks Tabs on navigation.
+ */
 export function useProjectId(): number | null {
-  const fromContext = useProjectIdFromContext();
-  if (fromContext != null) return fromContext;
-
-  const { id } = useGlobalSearchParams<{ id?: string | string[] }>();
-  const raw = Array.isArray(id) ? id[0] : id;
-  if (!raw) return null;
-  const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : null;
+  return useProjectIdFromContext();
 }

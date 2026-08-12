@@ -1,20 +1,21 @@
 import { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { Input } from '../../src/components/ui/Input';
-import { Button } from '../../src/components/ui/Button';
-import { Dropdown } from '../../src/components/ui/Dropdown';
-import { DateInput } from '../../src/components/ui/DateInput';
-import { ToggleRow } from '../../src/components/ui/ToggleRow';
-import { ScreenLayout } from '../../src/components/ui/ScreenLayout';
-import { PHASE_STATUS_OPTIONS } from '../../src/constants/options';
-import { getPhase, savePhase, getPhaseTasks, savePhaseTask } from '../../src/db/queries';
-import type { PhaseTask } from '../../src/types';
-import { colors, spacing, typography } from '../../src/theme';
+import { Input } from '../../../../src/components/ui/Input';
+import { Button } from '../../../../src/components/ui/Button';
+import { Dropdown } from '../../../../src/components/ui/Dropdown';
+import { DateInput } from '../../../../src/components/ui/DateInput';
+import { ToggleRow } from '../../../../src/components/ui/ToggleRow';
+import { ScreenLayout } from '../../../../src/components/ui/ScreenLayout';
+import { PHASE_STATUS_OPTIONS } from '../../../../src/constants/options';
+import { getPhase, savePhase, getPhaseTasks, savePhaseTask } from '../../../../src/db/queries';
+import type { PhaseTask } from '../../../../src/types';
+import { colors, spacing, typography } from '../../../../src/theme';
 
 export default function PhaseDetailScreen() {
-  const { phaseId } = useLocalSearchParams<{ phaseId: string }>();
-  const id = Number(phaseId);
+  const params = useLocalSearchParams<{ phaseId?: string | string[] }>();
+  const rawId = Array.isArray(params.phaseId) ? params.phaseId[0] : params.phaseId;
+  const id = Number(rawId);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -154,7 +155,14 @@ export default function PhaseDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.container, gap: spacing.md },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.container,
+    gap: spacing.md,
+    backgroundColor: colors.background,
+  },
   missing: { ...typography.body, color: colors.onSurfaceVariant },
   taskTitle: { ...typography.title, fontSize: 15, color: colors.onSurface, marginVertical: spacing.sm },
 });

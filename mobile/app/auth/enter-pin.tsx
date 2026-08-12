@@ -10,8 +10,6 @@ import { useAuth } from '../../src/context/AuthContext';
 import {
   getPinLength,
   MAX_PIN_LENGTH,
-  MIN_PIN_LENGTH,
-  PIN_IDLE_MS,
   rememberPinLength,
 } from '../../src/utils/security';
 import { colors, typography, spacing } from '../../src/theme';
@@ -19,14 +17,17 @@ import { colors, typography, spacing } from '../../src/theme';
 export default function EnterPinScreen() {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
-  const [expectedLength, setExpectedLength] = useState<number | null>(null);
+  const [expectedLength, setExpectedLength] = useState(MAX_PIN_LENGTH);
   const { unlock, unlockWithBiometric, isOnboarded, biometricAvailable, biometricEnabled } = useAuth();
   const router = useRouter();
   const pinRef = useRef(pin);
   pinRef.current = pin;
 
   useEffect(() => {
-    getPinLength().then(setExpectedLength);
+    getPinLength().then((len) => {
+      // New accounts are always 6 digits; keep older saved lengths working.
+      setExpectedLength(len ?? MAX_PIN_LENGTH);
+    });
   }, []);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function EnterPinScreen() {
       }).then((result) => {
         if (result.success) {
           unlockWithBiometric();
-          if (!isOnboarded) router.replace('/onboarding/company-setup');
+          if (!isOnboarded) router.replace('/onboarding/restore-choice');
           else router.replace('/(tabs)');
         }
       });
@@ -45,43 +46,24 @@ export default function EnterPinScreen() {
   }, [biometricAvailable, biometricEnabled, isOnboarded, router, unlockWithBiometric]);
 
   useEffect(() => {
-    if (pin.length < MIN_PIN_LENGTH) return;
-
-    const ready =
-      expectedLength != null
-        ? pin.length === expectedLength
-        : pin.length >= MIN_PIN_LENGTH;
-
-    if (!ready) return;
-
-    // Without a known length, wait so a 5–6 digit PIN can be finished.
-    const delay =
-      expectedLength != null
-        ? 150
-        : pin.length >= MAX_PIN_LENGTH
-          ? 150
-          : PIN_IDLE_MS;
+    if (pin.length !== expectedLength) return;
 
     let cancelled = false;
     const timer = setTimeout(async () => {
       const current = pinRef.current;
-      if (cancelled || current.length < MIN_PIN_LENGTH) return;
-      if (expectedLength != null && current.length !== expectedLength) return;
+      if (cancelled || current.length !== expectedLength) return;
 
       const valid = await unlock(current);
       if (cancelled) return;
       if (valid) {
-        if (expectedLength == null) {
-          await rememberPinLength(current.length);
-          setExpectedLength(current.length);
-        }
-        if (!isOnboarded) router.replace('/onboarding/company-setup');
+        await rememberPinLength(current.length);
+        if (!isOnboarded) router.replace('/onboarding/restore-choice');
         else router.replace('/(tabs)');
       } else {
         setError('Incorrect PIN');
         setPin('');
       }
-    }, delay);
+    }, 150);
 
     return () => {
       cancelled = true;
@@ -95,7 +77,7 @@ export default function EnterPinScreen() {
     });
     if (result.success) {
       unlockWithBiometric();
-      if (!isOnboarded) router.replace('/onboarding/company-setup');
+      if (!isOnboarded) router.replace('/onboarding/restore-choice');
       else router.replace('/(tabs)');
     }
   };
@@ -107,9 +89,9 @@ export default function EnterPinScreen() {
         <PinPad
           value={pin}
           onChange={(v) => { setError(''); setPin(v); }}
-          maxLength={MAX_PIN_LENGTH}
+          maxLength={expectedLength}
           title="Enter PIN"
-          subtitle="Enter your PIN to unlock"
+          subtitle={`Enter your ${expectedLength}-digit PIN to unlock`}
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         {biometricAvailable && biometricEnabled ? (

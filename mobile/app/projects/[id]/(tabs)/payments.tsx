@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,21 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { StatusBadge } from '../../../src/components/ui/StatusBadge';
-import { Dropdown } from '../../../src/components/ui/Dropdown';
-import { DateInput } from '../../../src/components/ui/DateInput';
-import { MoneyInput } from '../../../src/components/ui/MoneyInput';
-import { ToggleRow } from '../../../src/components/ui/ToggleRow';
-import { InvalidProjectFallback } from '../../../src/components/ui/InvalidProjectFallback';
-import { useProjectId } from '../../../src/hooks/useProjectId';
-import { MILESTONE_STATUS_OPTIONS, CHANGE_REQUEST_STATUS_OPTIONS } from '../../../src/constants/options';
+import { StatusBadge } from '../../../../src/components/ui/StatusBadge';
+import { Dropdown } from '../../../../src/components/ui/Dropdown';
+import { DateInput } from '../../../../src/components/ui/DateInput';
+import { MoneyInput } from '../../../../src/components/ui/MoneyInput';
+import { ToggleRow } from '../../../../src/components/ui/ToggleRow';
+import { InvalidProjectFallback } from '../../../../src/components/ui/InvalidProjectFallback';
+import { useProjectId } from '../../../../src/hooks/useProjectId';
+import { MILESTONE_STATUS_OPTIONS, CHANGE_REQUEST_STATUS_OPTIONS } from '../../../../src/constants/options';
 import {
   getInvoicesByProject,
   getMilestones,
@@ -27,10 +29,10 @@ import {
   saveMilestone,
   saveChangeRequest,
   getProjectPaymentSummary,
-} from '../../../src/db/queries';
-import type { Invoice, Milestone, ChangeRequest } from '../../../src/types';
-import { formatCurrency, formatDate } from '../../../src/utils/format';
-import { colors, spacing, typography, radius } from '../../../src/theme';
+} from '../../../../src/db/queries';
+import type { Invoice, Milestone, ChangeRequest } from '../../../../src/types';
+import { formatCurrency, formatDate } from '../../../../src/utils/format';
+import { colors, spacing, typography, radius } from '../../../../src/theme';
 
 export default function ProjectPaymentsScreen() {
   const projectId = useProjectId();
@@ -49,7 +51,23 @@ export default function ProjectPaymentsScreen() {
   const [summary, setSummary] = useState({ projectValue: 0, totalReceived: 0, amountRemaining: 0 });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [kbHeight, setKbHeight] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    const show = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e) => setKbHeight(e.endCoordinates.height),
+    );
+    const hide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKbHeight(0),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   const load = useCallback(async () => {
     if (!projectId) return;
@@ -148,17 +166,18 @@ export default function ProjectPaymentsScreen() {
   }
 
   return (
-    <KeyboardAwareScrollView
+    <KeyboardAvoidingView
       style={styles.container}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-      enableOnAndroid
-      enableAutomaticScroll
-      extraScrollHeight={Platform.OS === 'android' ? 80 : 40}
-      extraHeight={Platform.OS === 'android' ? 120 : 60}
-      enableResetScrollToCoords={false}
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
     >
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: spacing.xl * 3 + (kbHeight > 0 ? 160 : 0) }]}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+      >
       <View style={styles.summaryCard}>
         <Text style={styles.summaryTitle}>Payment Summary</Text>
         <Text style={styles.summaryRow}>Project Total: {formatCurrency(summary.projectValue)}</Text>
@@ -174,7 +193,7 @@ export default function ProjectPaymentsScreen() {
           style={styles.addBtn}
           onPress={() => {
             try {
-              router.push({ pathname: '/invoices/new', params: { projectId: String(projectId) } });
+              router.push({ pathname: '/invoices/create', params: { projectId: String(projectId) } });
             } catch (e) {
               Alert.alert('Error', e instanceof Error ? e.message : 'Could not open invoice form');
             }
@@ -284,7 +303,8 @@ export default function ProjectPaymentsScreen() {
           <Text style={styles.cardMeta}>{formatDate(cr.date)} · {formatCurrency(cr.charge)}</Text>
         </View>
       ))}
-    </KeyboardAwareScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

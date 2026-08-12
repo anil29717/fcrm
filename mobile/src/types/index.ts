@@ -31,6 +31,8 @@ export interface Company {
   invoice_number_format: string | null;
   invoice_next_number: number;
   invoice_reset_frequency: string | null;
+  signature_mode: string | null;
+  signature_path: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -228,8 +230,13 @@ export interface BackupLog {
 export interface DashboardStats {
   totalClients: number;
   activeProjects: number;
+  totalProjects: number;
+  totalValuation: number;
   totalReceived: number;
   totalPending: number;
+  totalInvoiced: number;
+  amountRemaining: number;
+  collectionRate: number;
 }
 
 export interface ActivityItem {
@@ -265,6 +272,8 @@ export interface CompanyProfileInput {
   invoice_number_format?: string;
   invoice_next_number?: number;
   invoice_reset_frequency?: string;
+  signature_mode?: 'authorized' | 'computer_generated';
+  signature_path?: string | null;
 }
 
 export interface ClientInput {

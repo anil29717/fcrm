@@ -2,14 +2,14 @@ import { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { StatusBadge } from '../../../src/components/ui/StatusBadge';
-import { Card } from '../../../src/components/ui/Card';
-import { ScreenLayout } from '../../../src/components/ui/ScreenLayout';
-import { getProject } from '../../../src/db/queries';
-import type { Project } from '../../../src/types';
-import { useProjectId } from '../../../src/hooks/useProjectId';
-import { formatCurrency } from '../../../src/utils/format';
-import { colors, spacing, typography, radius } from '../../../src/theme';
+import { StatusBadge } from '../../../../src/components/ui/StatusBadge';
+import { Card } from '../../../../src/components/ui/Card';
+import { ScreenLayout } from '../../../../src/components/ui/ScreenLayout';
+import { getProject } from '../../../../src/db/queries';
+import type { Project } from '../../../../src/types';
+import { useProjectId } from '../../../../src/hooks/useProjectId';
+import { formatCurrency } from '../../../../src/utils/format';
+import { colors, spacing, typography, radius } from '../../../../src/theme';
 
 export default function ProjectOverviewScreen() {
   const projectId = useProjectId();

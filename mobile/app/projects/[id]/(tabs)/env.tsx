@@ -4,15 +4,15 @@ import {
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Dropdown } from '../../../src/components/ui/Dropdown';
-import { PasswordInput } from '../../../src/components/ui/PasswordInput';
-import { ENVIRONMENT_OPTIONS } from '../../../src/constants/options';
-import { getEnvValues, saveEnvValue, deleteEnvValue } from '../../../src/db/queries';
-import type { ProjectEnvValue } from '../../../src/types';
-import { ScreenLayout } from '../../../src/components/ui/ScreenLayout';
-import { InvalidProjectFallback } from '../../../src/components/ui/InvalidProjectFallback';
-import { useProjectId } from '../../../src/hooks/useProjectId';
-import { colors, spacing, typography, radius } from '../../../src/theme';
+import { Dropdown } from '../../../../src/components/ui/Dropdown';
+import { PasswordInput } from '../../../../src/components/ui/PasswordInput';
+import { ENVIRONMENT_OPTIONS } from '../../../../src/constants/options';
+import { getEnvValues, saveEnvValue, deleteEnvValue } from '../../../../src/db/queries';
+import type { ProjectEnvValue } from '../../../../src/types';
+import { ScreenLayout } from '../../../../src/components/ui/ScreenLayout';
+import { InvalidProjectFallback } from '../../../../src/components/ui/InvalidProjectFallback';
+import { useProjectId } from '../../../../src/hooks/useProjectId';
+import { colors, spacing, typography, radius } from '../../../../src/theme';
 
 export default function ProjectEnvScreen() {
   const projectId = useProjectId();

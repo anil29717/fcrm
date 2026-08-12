@@ -10,18 +10,21 @@ import {
   FINANCIAL_YEAR_OPTIONS,
   INDUSTRY_OPTIONS,
   PAYMENT_TERMS_OPTIONS,
+  SIGNATURE_MODE_OPTIONS,
 } from '../../constants/options';
 import type { CompanyProfileInput } from '../../types';
 import { colors, spacing, typography, radius } from '../../theme';
 
-export interface BusinessProfileFormState extends Omit<CompanyProfileInput, 'logo_path'> {
+export interface BusinessProfileFormState extends Omit<CompanyProfileInput, 'logo_path' | 'signature_path'> {
   logo_path?: string | null;
+  signature_path?: string | null;
 }
 
 interface BusinessProfileFieldsProps {
   values: BusinessProfileFormState;
   onChange: (patch: Partial<BusinessProfileFormState>) => void;
   onPickLogo: () => void;
+  onPickSignature?: () => void;
   showInvoicePrefix?: boolean;
 }
 
@@ -29,9 +32,11 @@ export function BusinessProfileFields({
   values,
   onChange,
   onPickLogo,
+  onPickSignature,
   showInvoicePrefix = true,
 }: BusinessProfileFieldsProps) {
   const set = (key: keyof BusinessProfileFormState, value: unknown) => onChange({ [key]: value });
+  const signatureMode = values.signature_mode ?? 'computer_generated';
 
   return (
     <>
@@ -62,6 +67,37 @@ export function BusinessProfileFields({
           value={values.financial_year_start_month ?? 4}
           onChange={(v) => set('financial_year_start_month', v)}
         />
+      </FormSection>
+
+      <FormSection title="Invoice Signature">
+        <Dropdown
+          label="Signature Style"
+          options={SIGNATURE_MODE_OPTIONS}
+          value={signatureMode}
+          onChange={(v) => set('signature_mode', v)}
+        />
+        <Text style={styles.hint}>
+          {signatureMode === 'authorized'
+            ? 'Upload a signature image. It appears on invoice PDFs as Authorized Signatory.'
+            : 'PDFs will show “SYSTEM GENERATED” — no handwritten signature needed.'}
+        </Text>
+        {signatureMode === 'authorized' && onPickSignature ? (
+          <TouchableOpacity style={styles.sigBox} onPress={onPickSignature}>
+            {values.signature_path ? (
+              <Image source={{ uri: values.signature_path }} style={styles.sigImage} resizeMode="contain" />
+            ) : (
+              <>
+                <MaterialIcons name="draw" size={28} color={colors.primary} />
+                <Text style={styles.logoText}>Upload signature image</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        ) : null}
+        {signatureMode === 'authorized' && values.signature_path ? (
+          <TouchableOpacity onPress={() => set('signature_path', null)}>
+            <Text style={styles.clearSig}>Remove signature image</Text>
+          </TouchableOpacity>
+        ) : null}
       </FormSection>
 
       <FormSection title="Tax & Registration">
@@ -98,9 +134,22 @@ const styles = StyleSheet.create({
     borderColor: colors.outlineVariant,
     borderStyle: 'dashed',
     backgroundColor: colors.surfaceContainerLow,
-    marginBottom: spacing.lg,
-    overflow: 'hidden',
+    marginBottom: spacing.md,
   },
-  logoImage: { width: '100%', height: '100%' },
-  logoText: { ...typography.caption, color: colors.primary, marginTop: spacing.xs },
+  logoImage: { width: 96, height: 96, borderRadius: radius.md },
+  logoText: { ...typography.caption, color: colors.onSurfaceVariant, marginTop: spacing.xs },
+  hint: { ...typography.caption, color: colors.onSurfaceVariant, marginBottom: spacing.sm, lineHeight: 18 },
+  sigBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 100,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    borderStyle: 'dashed',
+    backgroundColor: colors.surfaceContainerLow,
+    padding: spacing.sm,
+  },
+  sigImage: { width: '100%', height: 80 },
+  clearSig: { ...typography.caption, color: colors.error, marginTop: spacing.sm },
 });

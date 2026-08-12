@@ -168,3 +168,8 @@ export const DISCOUNT_TYPE_OPTIONS = [
   { label: 'Amount (₹)', value: 'amount', icon: 'currency-rupee' as const },
   { label: 'Percentage (%)', value: 'percent', icon: 'percent' as const },
 ];
+
+export const SIGNATURE_MODE_OPTIONS = [
+  { label: 'Authorized signature', value: 'authorized', icon: 'draw' as const },
+  { label: 'Computer generated', value: 'computer_generated', icon: 'computer' as const },
+];

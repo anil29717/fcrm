@@ -22,6 +22,8 @@ export default function RootLayout() {
               })}
             />
             <Stack.Screen name="auth/enter-pin" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding/restore-choice" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding/restore" options={stackScreen('Restore Backup')} />
             <Stack.Screen name="onboarding/company-setup" options={stackScreenNoBack('Company Setup')} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="clients/new" options={stackScreen('New Client')} />
@@ -29,11 +31,10 @@ export default function RootLayout() {
             <Stack.Screen name="clients/[id]" options={stackScreen('Client Details')} />
             <Stack.Screen name="projects/new" options={stackScreen('New Project')} />
             <Stack.Screen name="projects/edit/[id]" options={stackScreen('Edit Project')} />
-            <Stack.Screen name="phase/[phaseId]" options={stackScreen('Phase Detail')} />
             <Stack.Screen name="projects/[id]" options={{ headerShown: false }} />
-            <Stack.Screen name="invoices/new" options={stackScreen('Create Invoice')} />
+            <Stack.Screen name="invoices/create" options={stackScreen('Create Invoice')} />
             <Stack.Screen name="invoices/[id]" options={stackScreen('Invoice')} />
-            <Stack.Screen name="settings/backup" options={stackScreen('Backup')} />
+            <Stack.Screen name="settings/backup" options={stackScreen('Export & Restore')} />
             <Stack.Screen name="settings/backup-config" options={stackScreen('Backup API Config')} />
             <Stack.Screen name="settings/template-builder" options={stackScreen('Invoice Template')} />
             <Stack.Screen name="settings/business-profile" options={stackScreen('Business Profile')} />

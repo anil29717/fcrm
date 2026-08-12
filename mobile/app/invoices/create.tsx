@@ -139,7 +139,7 @@ export default function NewInvoiceScreen() {
         </View>
       </View>
 
-      {projects.length === 0 ? (
+      {(!projects || projects.length === 0) ? (
         <View style={styles.emptyBox}>
           <MaterialIcons name="folder-off" size={32} color={colors.outline} />
           <Text style={styles.emptyText}>No projects yet. Create a project first.</Text>

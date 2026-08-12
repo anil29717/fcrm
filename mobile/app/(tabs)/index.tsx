@@ -9,15 +9,13 @@ import {
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import * as Network from 'expo-network';
 import { SummaryCard } from '../../src/components/SummaryCard';
 import { AppLogo } from '../../src/components/ui/AppLogo';
 import { Button } from '../../src/components/ui/Button';
 import { ScreenLayout } from '../../src/components/ui/ScreenLayout';
 import { getDashboardStats, getRecentActivity, getBackupLog } from '../../src/db/queries';
 import { getCompany } from '../../src/db/queries';
-import { performCloudBackup } from '../../src/utils/performBackup';
-import { getBackupConfig, isBackupConfigured } from '../../src/utils/cloudBackup';
+import { exportEverythingToFile } from '../../src/utils/localBackup';
 import type { ActivityItem, DashboardStats } from '../../src/types';
 import { formatCurrency, formatRelativeTime } from '../../src/utils/format';
 import { colors, spacing, typography, radius } from '../../src/theme';
@@ -60,38 +58,26 @@ export default function DashboardScreen() {
   };
 
   const handleBackup = async () => {
-    const state = await Network.getNetworkStateAsync();
-    if (!state.isConnected) {
-      Alert.alert('Offline', 'Internet connection required for backup.');
-      return;
-    }
     setBackingUp(true);
     try {
-      const config = await getBackupConfig();
-      const result = await performCloudBackup();
-      if (result.mode === 'cloud') {
-        Alert.alert('Success', 'Backup uploaded to MongoDB Atlas.');
-      } else if (!isBackupConfigured(config)) {
-        Alert.alert(
-          'Not Configured',
-          'Cloud backup is not set up. Go to Settings → Backup → Configure API.',
-          [
-            { text: 'Later', style: 'cancel' },
-            { text: 'Configure', onPress: () => router.push('/settings/backup-config') },
-          ],
-        );
-      } else {
-        Alert.alert('Success', 'Backup completed.');
-      }
+      const result = await exportEverythingToFile();
+      Alert.alert(
+        'Export ready',
+        `Backup ID:\n${result.backupId}\n\nApp version: ${result.appVersion}`,
+      );
       await load();
     } catch (e) {
-      const { saveBackupLog } = await import('../../src/db/queries');
-      await saveBackupLog('failed', e instanceof Error ? e.message : 'Backup failed');
-      Alert.alert('Error', e instanceof Error ? e.message : 'Backup failed. Please try again.');
+      Alert.alert('Error', e instanceof Error ? e.message : 'Export failed. Please try again.');
     } finally {
       setBackingUp(false);
     }
   };
+
+  const valuation = stats?.totalValuation ?? 0;
+  const received = stats?.totalReceived ?? 0;
+  const remaining = stats?.amountRemaining ?? 0;
+  const collectionRate = stats?.collectionRate ?? 0;
+  const receivedPct = valuation > 0 ? Math.min(100, (received / valuation) * 100) : 0;
 
   return (
     <ScreenLayout
@@ -106,13 +92,45 @@ export default function DashboardScreen() {
           <Text style={styles.greeting}>Welcome back</Text>
         </View>
       </View>
-      <Text style={styles.subtitle}>Here's a summary of your business today.</Text>
+      <Text style={styles.subtitle}>Business analytics at a glance.</Text>
 
+      <View style={styles.analyticsCard}>
+        <Text style={styles.analyticsTitle}>Portfolio Valuation</Text>
+        <Text style={styles.analyticsHero}>{formatCurrency(valuation, currency)}</Text>
+        <Text style={styles.analyticsSub}>
+          Across {stats?.totalProjects ?? 0} project{(stats?.totalProjects ?? 0) === 1 ? '' : 's'}
+        </Text>
+
+        <View style={styles.progressTrack}>
+          <View style={[styles.progressFill, { width: `${receivedPct}%` }]} />
+        </View>
+        <Text style={styles.progressLabel}>
+          {collectionRate.toFixed(0)}% collected
+        </Text>
+
+        <View style={styles.moneyRow}>
+          <View style={styles.moneyCol}>
+            <Text style={styles.moneyLabel}>Received</Text>
+            <Text style={[styles.moneyValue, { color: colors.success }]}>
+              {formatCurrency(received, currency)}
+            </Text>
+          </View>
+          <View style={styles.moneyDivider} />
+          <View style={styles.moneyCol}>
+            <Text style={styles.moneyLabel}>Remaining</Text>
+            <Text style={[styles.moneyValue, { color: colors.warning }]}>
+              {formatCurrency(remaining, currency)}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <Text style={styles.sectionTitle}>Overview</Text>
       <View style={styles.grid}>
         <SummaryCard label="Total Clients" value={String(stats?.totalClients ?? 0)} icon="group" />
         <SummaryCard label="Active Projects" value={String(stats?.activeProjects ?? 0)} icon="assignment" />
-        <SummaryCard label="Received" value={formatCurrency(stats?.totalReceived ?? 0, currency)} icon="payments" />
-        <SummaryCard label="Pending" value={formatCurrency(stats?.totalPending ?? 0, currency)} icon="account-balance-wallet" />
+        <SummaryCard label="Invoiced" value={formatCurrency(stats?.totalInvoiced ?? 0, currency)} icon="receipt-long" />
+        <SummaryCard label="Invoice Pending" value={formatCurrency(stats?.totalPending ?? 0, currency)} icon="account-balance-wallet" />
       </View>
 
       <Text style={styles.sectionTitle}>Recent Activity</Text>
@@ -135,15 +153,15 @@ export default function DashboardScreen() {
       </View>
 
       <View style={styles.backupSection}>
-        <Button title="Backup Now" onPress={handleBackup} loading={backingUp} />
+        <Button title="Export Everything" onPress={handleBackup} loading={backingUp} />
         <Text style={styles.backupNote}>
-          {lastBackup ? `Last backup: ${formatRelativeTime(lastBackup)}` : 'No backup yet'}
+          {lastBackup ? `Last export/restore: ${formatRelativeTime(lastBackup)}` : 'No export yet'}
         </Text>
         <Text style={styles.backupWarning}>
-          Documents and files are not included in backup.
+          Documents and files are not included in the JSON export.
         </Text>
         <TouchableOpacity onPress={() => router.push('/settings/backup')}>
-          <Text style={styles.backupLink}>View backup details</Text>
+          <Text style={styles.backupLink}>Export & Restore</Text>
         </TouchableOpacity>
       </View>
     </ScreenLayout>
@@ -166,6 +184,60 @@ const styles = StyleSheet.create({
   },
   greeting: { ...typography.display, fontSize: 28, color: colors.onSurface },
   subtitle: { ...typography.bodySm, color: colors.onSurfaceVariant, marginBottom: spacing.lg },
+  analyticsCard: {
+    backgroundColor: colors.surfaceContainerLowest,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
+    padding: spacing.container,
+    marginBottom: spacing.lg,
+  },
+  analyticsTitle: {
+    ...typography.label,
+    color: colors.onSurfaceVariant,
+    textTransform: 'uppercase',
+    marginBottom: spacing.xs,
+  },
+  analyticsHero: {
+    ...typography.display,
+    fontSize: 30,
+    color: colors.primary,
+  },
+  analyticsSub: {
+    ...typography.caption,
+    color: colors.onSurfaceVariant,
+    marginTop: 2,
+    marginBottom: spacing.md,
+  },
+  progressTrack: {
+    height: 8,
+    borderRadius: 999,
+    backgroundColor: colors.surfaceContainer,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: colors.success,
+    borderRadius: 999,
+  },
+  progressLabel: {
+    ...typography.caption,
+    color: colors.onSurfaceVariant,
+    marginTop: spacing.xs,
+    marginBottom: spacing.md,
+  },
+  moneyRow: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+  },
+  moneyCol: { flex: 1 },
+  moneyDivider: {
+    width: 1,
+    backgroundColor: colors.outlineVariant + '60',
+    marginHorizontal: spacing.md,
+  },
+  moneyLabel: { ...typography.caption, color: colors.onSurfaceVariant },
+  moneyValue: { ...typography.title, fontSize: 18, marginTop: 2 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md, marginBottom: spacing.lg },
   sectionTitle: { ...typography.title, color: colors.onSurface, marginBottom: spacing.md },
   activityCard: {

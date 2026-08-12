@@ -2,7 +2,7 @@
   "expo": {
     "name": "FreelancePro",
     "slug": "fcrm",
-    "version": "1.0.2",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "fcrm",
@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.6",
     "updates": {
       "url": "https://u.expo.dev/03d586e0-b6c4-41b6-8423-ef1071a9fe6d",
       "fallbackToCacheTimeout": 0,
@@ -25,6 +23,7 @@
       "bundleIdentifier": "com.fcrm.app"
     },
     "android": {
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -32,7 +31,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "package": "com.fcrm.app",
-      "versionCode": 3,
+      "versionCode": 7,
       "permissions": [
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT",

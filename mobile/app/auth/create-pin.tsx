@@ -4,11 +4,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppLogo } from '../../src/components/ui/AppLogo';
 import { PinPad } from '../../src/components/ui/PinPad';
-import {
-  MAX_PIN_LENGTH,
-  MIN_PIN_LENGTH,
-  PIN_IDLE_MS,
-} from '../../src/utils/security';
+import { MAX_PIN_LENGTH } from '../../src/utils/security';
 import { colors, spacing } from '../../src/theme';
 
 export default function CreatePinScreen() {
@@ -16,17 +12,20 @@ export default function CreatePinScreen() {
   const router = useRouter();
   const pinRef = useRef(pin);
   pinRef.current = pin;
+  const navigating = useRef(false);
 
   useEffect(() => {
-    if (pin.length < MIN_PIN_LENGTH) return;
+    if (pin.length !== MAX_PIN_LENGTH || navigating.current) return;
 
-    const delay = pin.length >= MAX_PIN_LENGTH ? 150 : PIN_IDLE_MS;
     const timer = setTimeout(() => {
       const current = pinRef.current;
-      if (current.length < MIN_PIN_LENGTH) return;
+      if (current.length !== MAX_PIN_LENGTH || navigating.current) return;
+      navigating.current = true;
       router.push({ pathname: '/auth/confirm-pin', params: { pin: current } });
       setPin('');
-    }, delay);
+      // Allow create again if user comes back.
+      setTimeout(() => { navigating.current = false; }, 500);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [pin, router]);
@@ -40,7 +39,7 @@ export default function CreatePinScreen() {
           onChange={setPin}
           maxLength={MAX_PIN_LENGTH}
           title="Create PIN"
-          subtitle="Choose a 4–6 digit PIN to secure your business data"
+          subtitle="Enter a 6-digit PIN to secure your business data"
         />
       </View>
     </SafeAreaView>

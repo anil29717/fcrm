@@ -1,16 +1,14 @@
 import { exportBackupData, saveBackupLog } from '../db/queries';
-import { getBackupConfig, isBackupConfigured, uploadBackupToCloud } from './cloudBackup';
+import { exportEverythingToFile } from './localBackup';
 
+/** Prefer full local export+share; kept for older call sites. */
 export async function performCloudBackup(): Promise<{ mode: 'cloud' | 'local' }> {
-  const payload = await exportBackupData();
-  const config = await getBackupConfig();
-
-  if (isBackupConfigured(config)) {
-    await uploadBackupToCloud(payload);
-    await saveBackupLog('success', 'Backup uploaded to MongoDB Atlas successfully.');
-    return { mode: 'cloud' };
-  }
-
-  await saveBackupLog('success', 'Data exported locally. Configure MongoDB Atlas API to enable cloud upload.');
+  await exportEverythingToFile();
   return { mode: 'local' };
+}
+
+export async function performLocalExportOnly(): Promise<object> {
+  const payload = await exportBackupData();
+  await saveBackupLog('success', 'Data exported locally.');
+  return payload;
 }

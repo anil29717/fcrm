@@ -4,13 +4,13 @@ import {
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { getProjectHistory, addManualHistoryNote, getProject } from '../../../src/db/queries';
-import type { ProjectHistory } from '../../../src/types';
-import { ScreenLayout } from '../../../src/components/ui/ScreenLayout';
-import { InvalidProjectFallback } from '../../../src/components/ui/InvalidProjectFallback';
-import { useProjectId } from '../../../src/hooks/useProjectId';
-import { formatDate } from '../../../src/utils/format';
-import { colors, spacing, typography, radius } from '../../../src/theme';
+import { getProjectHistory, addManualHistoryNote, getProject } from '../../../../src/db/queries';
+import type { ProjectHistory } from '../../../../src/types';
+import { ScreenLayout } from '../../../../src/components/ui/ScreenLayout';
+import { InvalidProjectFallback } from '../../../../src/components/ui/InvalidProjectFallback';
+import { useProjectId } from '../../../../src/hooks/useProjectId';
+import { formatDate } from '../../../../src/utils/format';
+import { colors, spacing, typography, radius } from '../../../../src/theme';
 
 const EVENT_ICONS: Record<string, keyof typeof MaterialIcons.glyphMap> = {
   created: 'add-circle',

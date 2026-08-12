@@ -57,6 +57,8 @@ export default function BusinessProfileScreen() {
           bank_ifsc: c.bank_ifsc ?? '',
           upi_id: c.upi_id ?? '',
           payment_link: c.payment_link ?? '',
+          signature_mode: (c.signature_mode as 'authorized' | 'computer_generated') || 'computer_generated',
+          signature_path: c.signature_path,
         });
         getComplianceDocs(c.id).then(setComplianceDocs);
       }
@@ -74,6 +76,25 @@ export default function BusinessProfileScreen() {
       setForm((f) => ({ ...f, logo_path: saved }));
     } catch (e) {
       Alert.alert('Upload failed', e instanceof Error ? e.message : 'Could not upload logo');
+    }
+  };
+
+  const pickSignature = async () => {
+    try {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) return Alert.alert('Permission needed', 'Allow photo access');
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [3, 1],
+        quality: 0.95,
+      });
+      if (result.canceled || !result.assets?.[0]) return;
+      const dest = `${getCompanyAssetsDir()}signature_${Date.now()}.png`;
+      const saved = await copyToAppStorage(result.assets[0].uri, dest);
+      setForm((f) => ({ ...f, signature_path: saved, signature_mode: 'authorized' }));
+    } catch (e) {
+      Alert.alert('Upload failed', e instanceof Error ? e.message : 'Could not upload signature');
     }
   };
 
@@ -100,7 +121,12 @@ export default function BusinessProfileScreen() {
     }
     setLoading(true);
     try {
-      await saveCompany({ ...form, logo_path: form.logo_path ?? undefined });
+      await saveCompany({
+        ...form,
+        logo_path: form.logo_path ?? undefined,
+        signature_path: form.signature_path,
+        signature_mode: form.signature_mode ?? 'computer_generated',
+      });
       await refreshOnboarding();
       router.back();
     } catch (e) {
@@ -112,7 +138,13 @@ export default function BusinessProfileScreen() {
 
   return (
     <ScreenLayout>
-      <BusinessProfileFields values={form} onChange={(p) => setForm((f) => ({ ...f, ...p }))} onPickLogo={pickLogo} showInvoicePrefix />
+      <BusinessProfileFields
+        values={form}
+        onChange={(p) => setForm((f) => ({ ...f, ...p }))}
+        onPickLogo={pickLogo}
+        onPickSignature={pickSignature}
+        showInvoicePrefix
+      />
       <FormSection title="Compliance Documents">
         <Dropdown label="Document Type" options={COMPLIANCE_DOC_OPTIONS} value={docType} onChange={setDocType} />
         <Button title="Upload Compliance Document" onPress={uploadComplianceDoc} variant="secondary" />

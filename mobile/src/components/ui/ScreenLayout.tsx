@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
+  ScrollView,
   StyleSheet,
   ViewStyle,
   ScrollViewProps,
@@ -8,13 +9,11 @@ import {
   Platform,
   Keyboard,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing } from '../../theme';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;
-  /** Fixed content below the navigation header (e.g. search bar) */
   fixedTop?: React.ReactNode;
   scrollable?: boolean;
   refreshControl?: ScrollViewProps['refreshControl'];
@@ -31,27 +30,37 @@ export function ScreenLayout({
   style,
 }: ScreenLayoutProps) {
   const insets = useSafeAreaInsets();
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-    const showSub = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
-    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+      // Keep the focused field reachable above the keyboard.
+      setTimeout(() => {
+        scrollRef.current?.scrollToEnd({ animated: true });
+      }, Platform.OS === 'android' ? 100 : 50);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardHeight(0));
     return () => {
       showSub.remove();
       hideSub.remove();
     };
   }, []);
 
-  const bottomPad = keyboardVisible
-    ? spacing.xl * 3 + insets.bottom
-    : spacing.xl * 2 + insets.bottom;
+  // With Android adjustResize the window already shrinks; still add room to scroll.
+  const bottomPad =
+    spacing.xl * 2 +
+    insets.bottom +
+    (keyboardHeight > 0 ? Math.min(keyboardHeight, Platform.OS === 'android' ? 220 : 120) : 24);
 
   const body = !scrollable ? (
     <View style={[styles.body, contentContainerStyle]}>{children}</View>
   ) : (
-    <KeyboardAwareScrollView
+    <ScrollView
+      ref={scrollRef}
       style={styles.scroll}
       contentContainerStyle={[
         styles.scrollContent,
@@ -62,21 +71,16 @@ export function ScreenLayout({
       refreshControl={refreshControl}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="on-drag"
-      enableOnAndroid
-      enableAutomaticScroll
-      extraScrollHeight={Platform.OS === 'android' ? 80 : 40}
-      extraHeight={Platform.OS === 'android' ? 120 : 60}
-      enableResetScrollToCoords={false}
-      keyboardOpeningTime={0}
+      automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
     >
       {children}
-    </KeyboardAwareScrollView>
+    </ScrollView>
   );
 
   return (
     <KeyboardAvoidingView
       style={[styles.root, style]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
     >
       {fixedTop ? <View style={styles.fixedTop}>{fixedTop}</View> : null}
@@ -91,17 +95,12 @@ interface ListScreenLayoutProps {
   style?: ViewStyle;
 }
 
-/** Wrapper for FlatList screens — keeps fixed top, list fills remaining space */
 export function ListScreenLayout({ fixedTop, children, style }: ListScreenLayoutProps) {
   return (
-    <KeyboardAvoidingView
-      style={[styles.root, style]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
-    >
+    <View style={[styles.root, style]}>
       {fixedTop ? <View style={styles.fixedTop}>{fixedTop}</View> : null}
       <View style={styles.listBody}>{children}</View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -119,9 +118,11 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     padding: spacing.container,
+    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   scrollContent: {
     padding: spacing.container,
@@ -129,5 +130,6 @@ const styles = StyleSheet.create({
   },
   listBody: {
     flex: 1,
+    backgroundColor: colors.background,
   },
 });

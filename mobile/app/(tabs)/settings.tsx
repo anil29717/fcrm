@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { ScreenLayout } from '../../src/components/ui/ScreenLayout';
+import { getAppVersion } from '../../src/utils/localBackup';
 import { colors, spacing, typography, radius } from '../../src/theme';
 
 interface SettingRowProps {
@@ -40,6 +41,7 @@ function SettingGroup({ title, children }: { title: string; children: React.Reac
 export default function SettingsScreen() {
   const { lock, biometricAvailable, biometricEnabled, toggleBiometric } = useAuth();
   const router = useRouter();
+  const appVersion = getAppVersion();
 
   const handleLogout = () => {
     Alert.alert('Lock App', 'Lock the app and require PIN to re-enter?', [
@@ -86,9 +88,9 @@ export default function SettingsScreen() {
 
       <SettingGroup title="System">
         <SettingRow
-          icon="cloud-sync"
-          title="Backup & Data"
-          subtitle="Manage local and cloud backups"
+          icon="import-export"
+          title="Export & Restore"
+          subtitle="Export everything or restore from a backup file"
           onPress={() => router.push('/settings/backup')}
         />
         <SettingRow
@@ -103,7 +105,7 @@ export default function SettingsScreen() {
           subtitle="Prefix, format, and sequence"
           onPress={() => router.push('/settings/invoice-numbering')}
         />
-        <SettingRow icon="info" title="About" subtitle="Version 1.0.0" />
+        <SettingRow icon="info" title="About" subtitle={`Version ${appVersion}`} />
       </SettingGroup>
 
       <TouchableOpacity style={styles.logout} onPress={handleLogout}>

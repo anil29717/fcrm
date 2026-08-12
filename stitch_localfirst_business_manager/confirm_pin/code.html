@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Confirm PIN - FreelancePro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "background": "#f7faf7",
+                            "on-error-container": "#93000a",
+                            "surface-variant": "#e0e3e0",
+                            "tertiary": "#773729",
+                            "tertiary-fixed-dim": "#ffb4a3",
+                            "surface-container-highest": "#e0e3e0",
+                            "primary-container": "#0e6e5c",
+                            "secondary-container": "#c9eade",
+                            "inverse-on-surface": "#eef2ee",
+                            "surface-container-high": "#e5e9e6",
+                            "primary": "#005445",
+                            "on-primary-fixed-variant": "#005143",
+                            "surface-tint": "#066b59",
+                            "tertiary-container": "#944e3e",
+                            "on-secondary-fixed-variant": "#2f4c44",
+                            "inverse-primary": "#84d6c0",
+                            "error-container": "#ffdad6",
+                            "surface": "#f7faf7",
+                            "surface-container": "#ebefec",
+                            "tertiary-fixed": "#ffdad2",
+                            "surface-container-low": "#f1f4f1",
+                            "on-surface-variant": "#3e4945",
+                            "primary-fixed": "#a0f2db",
+                            "secondary-fixed-dim": "#adcdc3",
+                            "surface-container-lowest": "#ffffff",
+                            "secondary-fixed": "#c9eade",
+                            "on-background": "#181c1b",
+                            "on-tertiary-container": "#ffd4cb",
+                            "on-error": "#ffffff",
+                            "surface-dim": "#d7dbd8",
+                            "on-tertiary-fixed": "#3a0a02",
+                            "secondary": "#47645c",
+                            "outline": "#6f7975",
+                            "primary-fixed-dim": "#84d6c0",
+                            "on-primary-container": "#9bedd6",
+                            "on-tertiary-fixed-variant": "#733426",
+                            "on-secondary-container": "#4d6a61",
+                            "outline-variant": "#bec9c4",
+                            "on-primary": "#ffffff",
+                            "on-secondary-fixed": "#02201a",
+                            "on-secondary": "#ffffff",
+                            "surface-bright": "#f7faf7",
+                            "inverse-surface": "#2d3130",
+                            "error": "#ba1a1a",
+                            "on-primary-fixed": "#002019",
+                            "on-surface": "#181c1b",
+                            "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "card-gap": "16px",
+                            "nav-height": "64px",
+                            "section-margin": "32px",
+                            "unit": "4px",
+                            "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                            "display-lg": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "label-md": ["Inter"],
+                            "label-sm": ["Inter"],
+                            "headline-sm": ["Inter"],
+                            "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                            "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                            "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .pin-dot {
+            transition: all 0.2s ease-in-out;
+        }
+        .pin-dot.filled {
+            background-color: #0e6e5c; /* Tailwind primary-container equivalent */
+            border-color: #0e6e5c;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Top Navigation Placeholder (Hidden for flow context as per semantic rules for transactional screens, but nav shell rule implies a linear transactional flow usually drops bottom nav. However, prompt explicitly asks to "Include the standard bottom navigation bar." and "TopAppBar". I will follow prompt explicit inclusion for bottom nav, but semantic rule suggests hiding it. Given conflict resolution, prompt specific requests override general semantic shell rules if explicitly stated, but I'll focus on the core canvas first.) -->
+<!-- Activating semantic shell override: Prompt explicitly asks for bottom nav, despite being a transactional flow. I will include it. -->
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-md mx-auto flex flex-col items-center justify-center px-container-padding py-section-margin z-10">
+<!-- Icon -->
+<div class="mb-8 w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<!-- Typography -->
+<div class="text-center mb-section-margin">
+<h1 class="font-display-lg text-display-lg text-on-background mb-unit">Confirm your PIN</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Please re-enter your 6-digit PIN to confirm</p>
+</div>
+<!-- PIN Dots -->
+<div class="flex space-x-4 mb-section-margin">
+<div class="pin-dot w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-container-lowest"></div>
+<div class="pin-dot w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-container-lowest"></div>
+<div class="pin-dot w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-container-lowest"></div>
+<div class="pin-dot w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-container-lowest"></div>
+<div class="pin-dot w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-container-lowest"></div>
+<div class="pin-dot w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-container-lowest"></div>
+</div>
+<!-- Numeric Keypad -->
+<div class="grid grid-cols-3 gap-y-6 gap-x-12 w-full max-w-[280px]">
+<!-- Row 1 -->
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">1</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">2</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">3</button>
+<!-- Row 2 -->
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">4</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">5</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">6</button>
+<!-- Row 3 -->
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">7</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">8</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">9</button>
+<!-- Row 4 -->
+<div class="w-16 h-16 mx-auto"></div> <!-- Empty cell -->
+<button class="w-16 h-16 rounded-full flex items-center justify-center font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">0</button>
+<button class="w-16 h-16 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-container mx-auto">
+<span class="material-symbols-outlined text-3xl" data-icon="backspace">backspace</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar (from JSON, md:hidden usually, but rendered as requested) -->
+<!-- Note: Settings is active as it's a security/setup flow, which often falls under settings or profile -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container-lowest dark:bg-surface-container shadow-sm md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors active:scale-90 duration-150 p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors active:scale-90 duration-150 p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors active:scale-90 duration-150 p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md">Projects</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors active:scale-90 duration-150 p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Invoices</span>
+</button>
+<!-- Active State: Settings (Proxy for Account/Security Setup) -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+<!-- Desktop Navigation (Hidden on mobile) to fulfill requirement if viewed on larger screens, matching Bottom Nav semantic active state -->
+<header class="w-full top-0 sticky bg-surface dark:bg-background flex justify-between items-center px-4 md:px-8 h-14 hidden md:flex shadow-sm z-50">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu">menu</span>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">FreelancePro</span>
+</div>
+<nav class="flex space-x-6">
+<a class="text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-all duration-200 active:scale-95 font-body-md text-body-md" href="#">Dashboard</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-all duration-200 active:scale-95 font-body-md text-body-md" href="#">Clients</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-all duration-200 active:scale-95 font-body-md text-body-md" href="#">Projects</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-all duration-200 active:scale-95 font-body-md text-body-md" href="#">Invoices</a>
+<a class="text-primary dark:text-primary-fixed font-semibold border-b-2 border-primary-container pb-1 hover:opacity-80 transition-all duration-200 active:scale-95 font-body-md text-body-md" href="#">Settings</a>
+</nav>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-label-md text-label-md">
+            UP
+        </div>
+</header>
+</body></html>

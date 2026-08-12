@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FreelancePro - Home Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "outline": "#6f7975",
+                            "inverse-primary": "#84d6c0",
+                            "on-secondary-fixed-variant": "#2f4c44",
+                            "surface-container-lowest": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "surface-container-high": "#e5e9e6",
+                            "on-primary-fixed-variant": "#005143",
+                            "on-primary-fixed": "#002019",
+                            "on-primary-container": "#9bedd6",
+                            "on-tertiary-container": "#ffd4cb",
+                            "tertiary-fixed-dim": "#ffb4a3",
+                            "on-surface": "#181c1b",
+                            "on-tertiary-fixed-variant": "#733426",
+                            "surface-container-highest": "#e0e3e0",
+                            "primary-fixed": "#a0f2db",
+                            "primary-container": "#0e6e5c",
+                            "background": "#f7faf7",
+                            "on-surface-variant": "#3e4945",
+                            "surface-container-low": "#f1f4f1",
+                            "surface-container": "#ebefec",
+                            "tertiary-container": "#944e3e",
+                            "inverse-on-surface": "#eef2ee",
+                            "secondary": "#47645c",
+                            "primary": "#005445",
+                            "surface-tint": "#066b59",
+                            "on-secondary-container": "#4d6a61",
+                            "inverse-surface": "#2d3130",
+                            "on-secondary": "#ffffff",
+                            "on-tertiary-fixed": "#3a0a02",
+                            "surface-bright": "#f7faf7",
+                            "outline-variant": "#bec9c4",
+                            "on-error": "#ffffff",
+                            "surface": "#f7faf7",
+                            "tertiary": "#773729",
+                            "tertiary-fixed": "#ffdad2",
+                            "on-background": "#181c1b",
+                            "on-primary": "#ffffff",
+                            "surface-variant": "#e0e3e0",
+                            "on-secondary-fixed": "#02201a",
+                            "on-tertiary": "#ffffff",
+                            "error-container": "#ffdad6",
+                            "error": "#ba1a1a",
+                            "secondary-fixed": "#c9eade",
+                            "surface-dim": "#d7dbd8",
+                            "secondary-fixed-dim": "#adcdc3",
+                            "primary-fixed-dim": "#84d6c0",
+                            "secondary-container": "#c9eade"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "unit": "4px",
+                            "container-padding": "20px",
+                            "nav-height": "64px",
+                            "card-gap": "16px",
+                            "section-margin": "32px"
+                    },
+                    "fontFamily": {
+                            "label-sm": ["Inter"],
+                            "body-md": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "label-md": ["Inter"],
+                            "headline-sm": ["Inter"],
+                            "display-lg": ["Inter"],
+                            "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                            "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .card-border {
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-[#F7F9FB] text-on-surface font-body-md min-h-screen pb-nav-height">
+<!-- Top App Bar (Hidden on Mobile) -->
+<header class="hidden md:flex justify-between items-center px-container-padding h-14 w-full bg-surface top-0 sticky z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer transition-all duration-200 hover:opacity-80 active:scale-95">menu</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">FreelancePro</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-8 w-8 rounded-full bg-surface-container overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-container-padding pt-6 md:pt-10">
+<!-- Header -->
+<section class="mb-section-margin">
+<h1 class="font-display-lg text-display-lg text-on-surface">Welcome back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Here's a summary of your freelance business today.</p>
+</section>
+<!-- Summary Section (2x2 Grid) -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-card-gap mb-section-margin">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-container-padding card-border flex flex-col justify-between h-32 hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Total Clients</span>
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<div class="font-display-lg text-display-lg text-on-surface">12</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-container-padding card-border flex flex-col justify-between h-32 hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Active Projects</span>
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">assignment</span>
+</div>
+<div class="font-display-lg text-display-lg text-on-surface">5</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-container-padding card-border flex flex-col justify-between h-32 hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Amount Received</span>
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div class="font-display-lg text-display-lg text-on-surface">$14,200</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-container-padding card-border flex flex-col justify-between h-32 hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Amount Pending</span>
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<div class="font-display-lg text-display-lg text-on-surface">$3,150</div>
+</div>
+</section>
+<!-- Recent Activity -->
+<section class="mb-section-margin">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Recent Activity</h2>
+<div class="bg-surface-container-lowest rounded-xl card-border overflow-hidden">
+<ul class="divide-y divide-outline-variant/30">
+<li class="p-4 hover:bg-surface-container-lowest transition-colors flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">receipt</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Invoice #INV-004 paid by Acme Corp</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">2 hours ago</p>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-surface-container-lowest transition-colors flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">New phase 'Design' started for Portfolio project</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">5 hours ago</p>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-surface-container-lowest transition-colors flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Client 'John Doe' added</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Yesterday</p>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<!-- Backup Utility -->
+<section class="flex flex-col items-center justify-center py-8">
+<button class="bg-[#0E6E5C] hover:opacity-90 text-white font-label-md text-label-md py-3 px-8 rounded-xl transition-all duration-200 active:scale-95 shadow-sm">
+                Backup Now
+            </button>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-3">Last backup: 2 hours ago</p>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-lowest shadow-sm h-nav-height pb-[calc(env(safe-area-inset-bottom)+8px)]">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center text-primary transition-transform duration-150 active:scale-90 group relative w-16" href="#">
+<div class="absolute top-[-8px] w-8 h-[2px] bg-primary rounded-full"></div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+</div>
+<span class="font-label-sm text-label-sm mt-1">Dashboard</span>
+</a>
+<!-- Clients -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-colors hover:bg-surface-container-high active:scale-90 w-16 rounded-lg p-1" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm mt-1">Clients</span>
+</a>
+<!-- Projects -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-colors hover:bg-surface-container-high active:scale-90 w-16 rounded-lg p-1" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-sm text-label-sm mt-1">Projects</span>
+</a>
+<!-- Invoices -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-colors hover:bg-surface-container-high active:scale-90 w-16 rounded-lg p-1" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm mt-1">Invoices</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-colors hover:bg-surface-container-high active:scale-90 w-16 rounded-lg p-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</a>
+</nav>
+</body></html>

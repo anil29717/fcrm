@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FreelancePro - Project Details - Documents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f1f4f1",
+                      "secondary": "#47645c",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#0e6e5c",
+                      "surface-dim": "#d7dbd8",
+                      "on-primary-container": "#9bedd6",
+                      "tertiary-fixed": "#ffdad2",
+                      "tertiary": "#773729",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#005143",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2d3130",
+                      "primary-fixed-dim": "#84d6c0",
+                      "primary-fixed": "#a0f2db",
+                      "on-primary-fixed": "#002019",
+                      "inverse-on-surface": "#eef2ee",
+                      "tertiary-fixed-dim": "#ffb4a3",
+                      "secondary-fixed-dim": "#adcdc3",
+                      "inverse-primary": "#84d6c0",
+                      "on-secondary-fixed-variant": "#2f4c44",
+                      "surface-container": "#ebefec",
+                      "on-tertiary-fixed-variant": "#733426",
+                      "on-secondary-fixed": "#02201a",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#066b59",
+                      "on-background": "#181c1b",
+                      "surface": "#f7faf7",
+                      "background": "#f7faf7",
+                      "secondary-fixed": "#c9eade",
+                      "surface-bright": "#f7faf7",
+                      "secondary-container": "#c9eade",
+                      "primary": "#005445",
+                      "on-secondary-container": "#4d6a61",
+                      "surface-variant": "#e0e3e0",
+                      "outline": "#6f7975",
+                      "on-tertiary-container": "#ffd4cb",
+                      "on-primary": "#ffffff",
+                      "outline-variant": "#bec9c4",
+                      "tertiary-container": "#944e3e",
+                      "on-surface": "#181c1b",
+                      "surface-container-high": "#e5e9e6",
+                      "surface-container-highest": "#e0e3e0",
+                      "on-surface-variant": "#3e4945",
+                      "on-tertiary-fixed": "#3a0a02"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-gap": "16px",
+                      "unit": "4px",
+                      "container-padding": "20px",
+                      "section-margin": "32px",
+                      "nav-height": "64px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background h-full text-on-surface flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar (Project Detail Header) -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 w-full flex justify-between items-center px-container-padding h-14 z-50">
+<div class="flex items-center gap-3">
+<button aria-label="Back" class="text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-1">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-surface">Acme Corp Redesign</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Due Oct 15, 2024</p>
+</div>
+</div>
+<button aria-label="More options" class="text-primary hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</header>
+<!-- Sub Navigation Tabs -->
+<nav class="bg-surface border-b border-outline-variant fixed top-14 w-full z-40 overflow-x-auto whitespace-nowrap">
+<ul class="flex px-container-padding gap-6">
+<li>
+<a class="block py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent" href="#">Overview</a>
+</li>
+<li>
+<a class="block py-4 font-label-md text-label-md text-primary font-bold border-b-2 border-primary" href="#">Documents</a>
+</li>
+<li>
+<a class="block py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent" href="#">Invoices</a>
+</li>
+<li>
+<a class="block py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent" href="#">Time</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 mt-28 mb-nav-height p-container-padding max-w-4xl mx-auto w-full">
+<!-- Action Header -->
+<div class="flex justify-between items-center mb-card-gap">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Project Documents</h2>
+<button class="bg-primary-container text-on-tertiary font-label-md text-label-md px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                Add Document
+            </button>
+</div>
+<!-- Document List (Bento-style Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-card-gap">
+<!-- Document Card 1 -->
+<div class="bg-surface-container-lowest border border-black/10 rounded-xl p-container-padding flex flex-col hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-error-container/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-error" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<button aria-label="Document options" class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-1 truncate">Signed Contract</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">2.4 MB</p>
+</div>
+<div class="flex justify-between items-center mt-auto border-t border-outline-variant/30 pt-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Uploaded Sep 10</span>
+<button aria-label="Download" class="text-primary hover:bg-surface-container-low p-1 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<!-- Document Card 2 -->
+<div class="bg-surface-container-lowest border border-black/10 rounded-xl p-container-padding flex flex-col hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-secondary-container/30 p-2 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="description">description</span>
+</div>
+<button aria-label="Document options" class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-1 truncate">Client Brief V2</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">156 KB</p>
+</div>
+<div class="flex justify-between items-center mt-auto border-t border-outline-variant/30 pt-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Uploaded Sep 12</span>
+<button aria-label="Download" class="text-primary hover:bg-surface-container-low p-1 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<!-- Document Card 3 -->
+<div class="bg-surface-container-lowest border border-black/10 rounded-xl p-container-padding flex flex-col hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-surface-variant p-2 rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="folder_zip">folder_zip</span>
+</div>
+<button aria-label="Document options" class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-1 truncate">Brand Assets</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">45.2 MB</p>
+</div>
+<div class="flex justify-between items-center mt-auto border-t border-outline-variant/30 pt-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Uploaded Sep 15</span>
+<button aria-label="Download" class="text-primary hover:bg-surface-container-low p-1 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<!-- Document Card 4 -->
+<div class="bg-surface-container-lowest border border-black/10 rounded-xl p-container-padding flex flex-col hover:shadow-sm transition-shadow border-dashed">
+<button class="h-full w-full flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors py-8">
+<div class="bg-surface-container-low p-3 rounded-full mb-3">
+<span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+</div>
+<span class="font-label-md text-label-md">Upload New</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component) -->
+<!-- Applying shell layout, separation logic, and responsive hiding (only shows on mobile md:hidden) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe bg-surface border-t border-outline-variant shadow-sm z-50 md:hidden block">
+<!-- Tab 1: Dashboard (Inactive) -->
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Dashboard</span>
+</a>
+<!-- Tab 2: Clients (Inactive) -->
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Clients</span>
+</a>
+<!-- Tab 3: Projects (Active - Since this is a Project detail screen, contextually it falls under Projects) -->
+<a class="flex flex-col items-center justify-center text-primary hover:bg-secondary-container rounded-full p-2 transition-colors scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="assignment" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Projects</span>
+</a>
+<!-- Tab 4: Settings (Inactive) -->
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Settings</span>
+</a>
+</nav>
+<!-- Desktop Sidebar (Hidden on mobile) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-14 bottom-0 w-64 bg-surface border-r border-outline-variant z-30 pt-4 px-4 gap-2">
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md font-medium">Clients</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg bg-secondary-container/50 text-primary font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="assignment" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-body-md text-body-md">Projects</span>
+</a>
+<div class="mt-auto mb-4">
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md font-medium">Settings</span>
+</a>
+</div>
+</aside>
+</body></html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice Template - FreelancePro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f1f4f1",
+                        "secondary": "#47645c",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#0e6e5c",
+                        "surface-dim": "#d7dbd8",
+                        "on-primary-container": "#9bedd6",
+                        "tertiary-fixed": "#ffdad2",
+                        "tertiary": "#773729",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005143",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d3130",
+                        "primary-fixed-dim": "#84d6c0",
+                        "primary-fixed": "#a0f2db",
+                        "on-primary-fixed": "#002019",
+                        "inverse-on-surface": "#eef2ee",
+                        "tertiary-fixed-dim": "#ffb4a3",
+                        "secondary-fixed-dim": "#adcdc3",
+                        "inverse-primary": "#84d6c0",
+                        "on-secondary-fixed-variant": "#2f4c44",
+                        "surface-container": "#ebefec",
+                        "on-tertiary-fixed-variant": "#733426",
+                        "on-secondary-fixed": "#02201a",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#066b59",
+                        "on-background": "#181c1b",
+                        "surface": "#f7faf7",
+                        "background": "#f7faf7",
+                        "secondary-fixed": "#c9eade",
+                        "surface-bright": "#f7faf7",
+                        "secondary-container": "#c9eade",
+                        "primary": "#005445",
+                        "on-secondary-container": "#4d6a61",
+                        "surface-variant": "#e0e3e0",
+                        "outline": "#6f7975",
+                        "on-tertiary-container": "#ffd4cb",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#bec9c4",
+                        "tertiary-container": "#944e3e",
+                        "on-surface": "#181c1b",
+                        "surface-container-high": "#e5e9e6",
+                        "surface-container-highest": "#e0e3e0",
+                        "on-surface-variant": "#3e4945",
+                        "on-tertiary-fixed": "#3a0a02"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-gap": "16px",
+                        "unit": "4px",
+                        "container-padding": "20px",
+                        "section-margin": "32px",
+                        "nav-height": "64px",
+                        "margin-safe": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                        "headline-sm": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-bold": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Drag and Drop styles */
+        .drag-item.dragging {
+            opacity: 0.5;
+            background-color: theme('colors.surface-container-high');
+        }
+        .drag-item.drag-over {
+            border-top: 2px solid theme('colors.primary');
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-full flex flex-col font-body-md overflow-x-hidden pt-14 pb-16">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-safe h-14 w-full">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary">Invoice Template</div>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">save</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-grow p-container-padding flex flex-col gap-section-margin max-w-3xl mx-auto w-full md:grid md:grid-cols-12 md:gap-8">
+<!-- Builder Section -->
+<section class="flex flex-col gap-4 md:col-span-7">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Template Blocks</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">Drag to reorder. Toggle to show/hide in final invoice.</p>
+<div class="flex flex-col gap-2" id="drag-container">
+<!-- Block 1 -->
+<div class="drag-item flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg border border-black/10 cursor-move hover:bg-surface-container-low transition-colors" draggable="true">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">drag_indicator</span>
+<span class="font-body-lg text-body-lg text-on-surface">Company Details</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Block 2 -->
+<div class="drag-item flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg border border-black/10 cursor-move hover:bg-surface-container-low transition-colors" draggable="true">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">drag_indicator</span>
+<span class="font-body-lg text-body-lg text-on-surface">Invoice Number &amp; Date</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Block 3 -->
+<div class="drag-item flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg border border-black/10 cursor-move hover:bg-surface-container-low transition-colors" draggable="true">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">drag_indicator</span>
+<span class="font-body-lg text-body-lg text-on-surface">Client Details</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Block 4 -->
+<div class="drag-item flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg border border-black/10 cursor-move hover:bg-surface-container-low transition-colors" draggable="true">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">drag_indicator</span>
+<span class="font-body-lg text-body-lg text-on-surface">Payment Details</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Block 5 -->
+<div class="drag-item flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg border border-black/10 cursor-move hover:bg-surface-container-low transition-colors" draggable="true">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">drag_indicator</span>
+<span class="font-body-lg text-body-lg text-on-surface">Delivery Timeline</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Block 6 -->
+<div class="drag-item flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg border border-black/10 cursor-move hover:bg-surface-container-low transition-colors" draggable="true">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">drag_indicator</span>
+<span class="font-body-lg text-body-lg text-on-surface">Signature</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Preview Section -->
+<section class="flex flex-col gap-4 md:col-span-5">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Live Preview</h2>
+<div class="bg-surface-container-lowest border border-black/10 rounded-xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] sticky top-20 aspect-[1/1.414] w-full max-w-sm mx-auto flex flex-col gap-4 text-[10px] leading-tight overflow-hidden">
+<!-- Mini Header -->
+<div class="flex justify-between items-start border-b border-surface-variant pb-3">
+<div class="w-1/2">
+<div class="font-bold text-lg text-primary mb-1">Brand Name</div>
+<div class="text-on-surface-variant">123 Studio Way</div>
+<div class="text-on-surface-variant">Design City, ST 12345</div>
+</div>
+<div class="text-right">
+<div class="font-bold text-lg mb-1 text-on-surface">INVOICE</div>
+<div class="text-on-surface-variant">INV-2023-001</div>
+<div class="text-on-surface-variant">Nov 14, 2023</div>
+</div>
+</div>
+<!-- Mini Client -->
+<div class="border-b border-surface-variant pb-3">
+<div class="text-on-surface-variant mb-1 uppercase font-bold text-[8px] tracking-wider">Bill To</div>
+<div class="font-semibold text-on-surface">Acme Corp</div>
+<div class="text-on-surface-variant">Attn: John Doe</div>
+</div>
+<!-- Mini Table -->
+<div class="flex-grow">
+<div class="flex border-b border-surface-variant pb-1 font-bold text-on-surface-variant uppercase text-[8px] tracking-wider mb-2">
+<div class="flex-grow">Description</div>
+<div class="w-12 text-right">Amount</div>
+</div>
+<div class="flex mb-2">
+<div class="flex-grow text-on-surface">Brand Identity Design</div>
+<div class="w-12 text-right font-semibold">$1,500</div>
+</div>
+<div class="flex mb-2">
+<div class="flex-grow text-on-surface">Website Development</div>
+<div class="w-12 text-right font-semibold">$3,200</div>
+</div>
+</div>
+<!-- Mini Total -->
+<div class="flex justify-end pt-2 border-t border-surface-variant">
+<div class="w-32">
+<div class="flex justify-between mb-1">
+<span class="text-on-surface-variant">Subtotal</span>
+<span class="font-semibold text-on-surface">$4,700</span>
+</div>
+<div class="flex justify-between font-bold text-sm text-primary pt-1 border-t border-surface-variant">
+<span>Total</span>
+<span>$4,700</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Hidden on desktop if it was defined, but spec says persistent) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe bg-surface border-t border-outline-variant z-50 md:hidden">
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 w-16 h-14" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-bold text-label-bold mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 w-16 h-14" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-bold text-label-bold mt-1">Clients</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 w-16 h-14" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-bold text-label-bold mt-1">Projects</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-semibold hover:bg-secondary-container rounded-full p-2 w-16 h-14 relative" href="#">
+<div class="absolute top-0 left-1/4 right-1/4 h-0.5 bg-primary rounded-b"></div>
+<span class="material-symbols-outlined" data-weight="fill">receipt_long</span>
+<span class="font-label-bold text-label-bold mt-1">Invoices</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:bg-secondary-container rounded-full p-2 w-16 h-14" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-bold text-label-bold mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple Drag and Drop functionality for visual demonstration
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const container = document.getElementById('drag-container');
+
+            let draggedItem = null;
+
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    draggedItem = item;
+                    setTimeout(() => {
+                        item.classList.add('dragging');
+                    }, 0);
+                });
+
+                item.addEventListener('dragend', function() {
+                    setTimeout(() => {
+                        draggedItem.classList.remove('dragging');
+                        draggedItem = null;
+                        dragItems.forEach(el => el.classList.remove('drag-over'));
+                    }, 0);
+                });
+
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    if(item !== draggedItem) {
+                        item.classList.add('drag-over');
+                    }
+                });
+
+                item.addEventListener('dragleave', function() {
+                    item.classList.remove('drag-over');
+                });
+
+                item.addEventListener('drop', function(e) {
+                    item.classList.remove('drag-over');
+                    if(item !== draggedItem) {
+                        // Insert before or after based on rudimentary position logic
+                        container.insertBefore(draggedItem, item);
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

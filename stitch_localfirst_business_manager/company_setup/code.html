@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Set up your business - FreelancePro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#131b2e",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "outline": "#6d7a77",
+                      "primary-container": "#008378",
+                      "on-secondary-fixed-variant": "#3f465c",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#d3e4fe",
+                      "tertiary-fixed": "#ffdbce",
+                      "primary-fixed": "#89f5e7",
+                      "surface-variant": "#d3e4fe",
+                      "tertiary": "#924628",
+                      "outline-variant": "#bcc9c6",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed": "#00201d",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "surface-container": "#e5eeff",
+                      "secondary": "#565e74",
+                      "surface-bright": "#f8f9ff",
+                      "on-tertiary-fixed": "#370e00",
+                      "inverse-surface": "#213145",
+                      "secondary-fixed": "#dae2fd",
+                      "on-primary-container": "#f4fffc",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-secondary": "#ffffff",
+                      "surface": "#f8f9ff",
+                      "inverse-primary": "#6bd8cb",
+                      "on-error": "#ffffff",
+                      "secondary-fixed-dim": "#bec6e0",
+                      "background": "#f8f9ff",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "secondary-container": "#dae2fd",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#dce9ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-dim": "#cbdbf5",
+                      "on-background": "#0b1c30",
+                      "tertiary-container": "#b05e3d",
+                      "on-secondary-container": "#5c647a",
+                      "primary": "#00685f",
+                      "surface-tint": "#006a61",
+                      "surface-container-low": "#eff4ff",
+                      "on-surface": "#0b1c30",
+                      "on-surface-variant": "#3d4947",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-safe": "16px",
+                      "gutter": "12px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "safe": "env(safe-area-inset-bottom)"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-bold": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Modern Input Styling */
+        .input-modern {
+            @apply w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm text-body-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors;
+        }
+        
+        .label-modern {
+            @apply block text-label-md font-label-md text-on-surface-variant mb-xs;
+        }
+
+        /* Card Elevation */
+        .card-elevation {
+            @apply bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-md;
+        }
+
+        /* Smooth interactive effects */
+        .interactive-scale {
+            @apply active:scale-[0.98] transition-transform duration-150;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-14 pb-16">
+<!-- TopAppBar -->
+<!-- Applying explicit styles from JSON -->
+<header class="fixed top-0 w-full bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center px-margin-safe h-14 z-50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors p-1 rounded-full cursor-pointer">arrow_back</span>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">FreelancePro</span>
+</div>
+<div>
+<!-- Trailing icon omitted for transactional onboarding intent -->
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-2xl mx-auto px-margin-safe py-lg flex flex-col gap-xl">
+<!-- Header Section -->
+<div class="text-center flex flex-col items-center gap-sm mt-4">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Set up your business</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">Let's get your professional profile ready to impress clients and manage your work.</p>
+</div>
+<!-- Logo Upload (Circular Placeholder) -->
+<div class="flex flex-col items-center justify-center gap-sm">
+<div class="relative w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex items-center justify-center cursor-pointer hover:bg-surface-container-high transition-colors interactive-scale group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style="font-variation-settings: 'opsz' 32; font-size: 32px;">photo_camera</span>
+<div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-1 border-2 border-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Upload Business Logo</span>
+</div>
+<!-- Form Fields -->
+<form class="flex flex-col gap-lg">
+<!-- Company Name -->
+<div>
+<label class="label-modern" for="companyName">Company or Freelance Name</label>
+<input class="input-modern" id="companyName" placeholder="e.g., Jane Doe Designs" type="text"/>
+</div>
+<!-- Business Address -->
+<div>
+<label class="label-modern" for="businessAddress">Business Address</label>
+<textarea class="input-modern resize-none" id="businessAddress" placeholder="Enter your full business address..." rows="3"></textarea>
+</div>
+<!-- Invoice Short Code -->
+<div>
+<label class="label-modern flex items-center justify-between" for="shortCode">
+<span>Invoice Prefix Code</span>
+<span class="text-on-surface-variant opacity-70">e.g., ABC</span>
+</label>
+<div class="relative">
+<input class="input-modern font-mono uppercase tracking-wider pl-10" id="shortCode" maxlength="4" placeholder="JD" type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">tag</span>
+</div>
+<p class="font-label-md text-label-md mt-xs text-on-surface-variant text-xs opacity-80">This will be used to generate invoice numbers (e.g., JD-001).</p>
+</div>
+<hr class="border-outline-variant my-sm"/>
+<!-- Document Upload Section -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Business Documents</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-sm">Upload verifiable documents to enable faster payment processing.</p>
+<!-- MSME Certificate Card -->
+<div class="card-elevation flex items-center justify-between gap-md interactive-scale cursor-pointer group">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-bold text-label-bold text-on-surface">MSME Certificate</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Optional • PDF, JPG</span>
+</div>
+</div>
+<button class="px-sm py-xs border border-primary text-primary rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors" type="button">
+                        Upload
+                    </button>
+</div>
+<!-- GST Certificate Card -->
+<div class="card-elevation flex items-center justify-between gap-md interactive-scale cursor-pointer group">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-primary">request_quote</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-bold text-label-bold text-on-surface">GST Certificate</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Required if registered</span>
+</div>
+</div>
+<button class="px-sm py-xs border border-primary text-primary rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors" type="button">
+                        Upload
+                    </button>
+</div>
+</div>
+<!-- Primary Action -->
+<div class="mt-xl mb-xl">
+<button class="w-full h-12 bg-primary text-on-primary font-headline-md text-headline-md rounded-xl shadow-sm interactive-scale flex items-center justify-center gap-sm" type="button">
+                    Continue
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<p class="text-center font-label-md text-label-md text-on-surface-variant mt-sm">You can change these details later in Settings.</p>
+</div>
+</form>
+</main>
+<!-- BottomNavBar -->
+<!-- Hiding on desktop (md:hidden), keeping fixed at bottom. Suppressed active state logic as this is a transactional onboarding screen, however, rendering as requested by prompt. Nav is visually suppressed (all inactive) to imply focused flow, while still present as requested. -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe bg-surface dark:bg-surface border-t border-outline-variant dark:border-outline shadow-sm z-50">
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container rounded-full p-2 transition-colors cursor-pointer w-16">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container rounded-full p-2 transition-colors cursor-pointer w-16">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Clients</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container rounded-full p-2 transition-colors cursor-pointer w-16">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Projects</span>
+</div>
+<!-- Note: Settings is in JSON, Invoices is in prompt. Appending Settings from JSON to respect blueprint. -->
+<div class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container rounded-full p-2 transition-colors cursor-pointer w-16 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-bold text-label-bold mt-1 text-[10px]">Settings</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FreelancePro - Client Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f1f4f1",
+                      "secondary": "#47645c",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#0e6e5c",
+                      "surface-dim": "#d7dbd8",
+                      "on-primary-container": "#9bedd6",
+                      "tertiary-fixed": "#ffdad2",
+                      "tertiary": "#773729",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#005143",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2d3130",
+                      "primary-fixed-dim": "#84d6c0",
+                      "primary-fixed": "#a0f2db",
+                      "on-primary-fixed": "#002019",
+                      "inverse-on-surface": "#eef2ee",
+                      "tertiary-fixed-dim": "#ffb4a3",
+                      "secondary-fixed-dim": "#adcdc3",
+                      "inverse-primary": "#84d6c0",
+                      "on-secondary-fixed-variant": "#2f4c44",
+                      "surface-container": "#ebefec",
+                      "on-tertiary-fixed-variant": "#733426",
+                      "on-secondary-fixed": "#02201a",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#066b59",
+                      "on-background": "#181c1b",
+                      "surface": "#f7faf7",
+                      "background": "#f7faf7",
+                      "secondary-fixed": "#c9eade",
+                      "surface-bright": "#f7faf7",
+                      "secondary-container": "#c9eade",
+                      "primary": "#005445",
+                      "on-secondary-container": "#4d6a61",
+                      "surface-variant": "#e0e3e0",
+                      "outline": "#6f7975",
+                      "on-tertiary-container": "#ffd4cb",
+                      "on-primary": "#ffffff",
+                      "outline-variant": "#bec9c4",
+                      "tertiary-container": "#944e3e",
+                      "on-surface": "#181c1b",
+                      "surface-container-high": "#e5e9e6",
+                      "surface-container-highest": "#e0e3e0",
+                      "on-surface-variant": "#3e4945",
+                      "on-tertiary-fixed": "#3a0a02"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-gap": "16px",
+                      "unit": "4px",
+                      "container-padding": "20px",
+                      "section-margin": "32px",
+                      "nav-height": "64px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "11px",
+                              {
+                                      "lineHeight": "14px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Base styles from style guidance */
+        body {
+            background-color: #F7F9FB; /* Surface */
+        }
+        .card-border {
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
+        }
+        .nav-active-indicator {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 2px;
+            background-color: #0E6E5C; /* Primary Teal */
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+        
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Hide scrollbar for clean UI but keep functionality */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent; /* make scrollbar transparent */
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-full flex flex-col antialiased">
+<!-- Top App Bar (Desktop: full nav cluster, Mobile: TopAppBar format) -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant shadow-sm transition-transform duration-300 md:hidden flex justify-between items-center px-4 h-14">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface cursor-pointer" onclick="window.history.back()">arrow_back</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">FreelancePro</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-on-surface">more_vert</span>
+</button>
+</header>
+<!-- Desktop Navigation -->
+<nav class="hidden md:flex fixed top-0 w-full z-50 bg-surface border-b border-outline-variant h-16 items-center px-8 justify-between">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">FreelancePro</h1>
+<div class="flex gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-primary font-semibold border-b-2 border-primary pb-1" href="#">Clients</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Projects</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Settings</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-label-md font-bold">JD</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 w-full max-w-7xl mx-auto pt-20 pb-24 md:pb-8 px-container-padding grid grid-cols-1 md:grid-cols-12 gap-6 relative">
+<!-- Client Profile Header Section (Spans 12 cols on desktop) -->
+<div class="md:col-span-12">
+<div class="bg-surface-container-lowest rounded-xl p-6 card-border flex flex-col md:flex-row md:items-start justify-between gap-6 relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container opacity-10 rounded-bl-full -z-10 blur-2xl pointer-events-none"></div>
+<div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+<!-- Client Avatar/Initials -->
+<div class="w-20 h-20 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center font-display-lg text-display-lg shadow-sm border border-secondary-fixed">
+                        AC
+                    </div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<h2 class="font-display-lg text-display-lg text-on-surface">Acme Corp</h2>
+<span class="px-2 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Active</span>
+</div>
+<div class="flex flex-col sm:flex-row gap-2 sm:gap-6 text-on-surface-variant">
+<div class="flex items-center gap-1.5 font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px]">business</span>
+                                Tech Enterprise
+                            </div>
+<div class="flex items-center gap-1.5 font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                                San Francisco, CA
+                            </div>
+</div>
+</div>
+</div>
+<div class="flex flex-row md:flex-col gap-3 shrink-0">
+<button class="bg-[#0E6E5C] text-white px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-tint transition-colors shadow-sm flex items-center gap-2 flex-1 md:flex-none justify-center">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        Edit Client
+                    </button>
+<button class="bg-transparent border border-[#0E6E5C] text-[#0E6E5C] px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center gap-2 flex-1 md:flex-none justify-center">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+                        Message
+                    </button>
+</div>
+</div>
+</div>
+<!-- Contact Info & Quick Stats (Spans 4 cols on desktop) -->
+<div class="md:col-span-4 flex flex-col gap-6">
+<!-- Contact Card -->
+<div class="bg-surface-container-lowest rounded-xl p-5 card-border flex flex-col gap-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Contact Details</h3>
+<div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary-container/10 transition-colors shrink-0">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-0.5">Primary Contact</span>
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Sarah Jenkins</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm truncate">Director of Product</span>
+</div>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<a class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors group border border-transparent hover:border-outline-variant" href="mailto:sarah.j@acmecorp.com">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary-container/10 transition-colors shrink-0">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-0.5">Email Address</span>
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">sarah.j@acmecorp.com</span>
+</div>
+</a>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<a class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors group border border-transparent hover:border-outline-variant" href="tel:+15551234567">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary-container/10 transition-colors shrink-0">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-0.5">Phone Number</span>
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">+1 (555) 123-4567</span>
+</div>
+</a>
+</div>
+<!-- Financial Summary Card (Bento Style) -->
+<div class="bg-surface-container-lowest rounded-xl p-5 card-border flex flex-col gap-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Financial Overview</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container-low p-4 rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total Billed</span>
+<span class="font-headline-md text-headline-md text-on-surface">$24,500</span>
+</div>
+<div class="bg-secondary-container/30 p-4 rounded-lg flex flex-col border border-secondary-fixed">
+<span class="font-label-sm text-label-sm text-on-secondary-container uppercase tracking-wider mb-1">Outstanding</span>
+<span class="font-headline-md text-headline-md text-secondary font-bold">$3,200</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Linked Projects Section (Spans 8 cols on desktop) -->
+<div class="md:col-span-8 flex flex-col gap-4">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Linked Projects</h3>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">3 Total</span>
+</div>
+<!-- Project List (Bento Grid layout) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Project Card 1: In Progress (Emphasized) -->
+<div class="bg-surface-container-lowest rounded-xl p-5 card-border flex flex-col justify-between group hover:shadow-md transition-shadow relative overflow-hidden sm:col-span-2">
+<div class="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="flex flex-col gap-1 max-w-[70%]">
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors cursor-pointer">Mobile App Redesign</h4>
+<span class="font-body-md text-body-md text-on-surface-variant">Phase 2: UI Implementation &amp; Prototyping</span>
+</div>
+<!-- Status Pill: In Progress -->
+<div class="px-3 py-1 rounded-full bg-[#0E6E5C]/10 text-[#0E6E5C] font-label-md text-label-md border border-[#0E6E5C]/20 flex items-center gap-1.5 shrink-0">
+<div class="w-1.5 h-1.5 rounded-full bg-[#0E6E5C] animate-pulse"></div>
+                            In Progress
+                        </div>
+</div>
+<div class="flex flex-col gap-4 relative z-10">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
+<div class="bg-[#0E6E5C] h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+<div class="flex justify-between items-center mt-2 border-t border-outline-variant/30 pt-4">
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Deadline</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Oct 15, 2023</span>
+</div>
+<div class="w-px h-8 bg-outline-variant/50"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Budget</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$12,000</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Project Card 2: Completed -->
+<div class="bg-surface-container-lowest rounded-xl p-5 card-border flex flex-col justify-between group hover:shadow-md transition-shadow relative">
+<div class="flex justify-between items-start mb-6">
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface line-clamp-2 pr-2">Brand Identity System</h4>
+<!-- Status Pill: Completed -->
+<div class="px-2 py-1 rounded-md bg-secondary/10 text-secondary font-label-sm text-label-sm flex items-center shrink-0">
+                            Completed
+                        </div>
+</div>
+<div class="flex flex-col border-t border-outline-variant/30 pt-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Delivered</span>
+<span class="font-body-md text-body-md text-on-surface">Aug 02, 2023</span>
+</div>
+</div>
+<!-- Project Card 3: Planning -->
+<div class="bg-surface-container-lowest rounded-xl p-5 card-border flex flex-col justify-between group hover:shadow-md transition-shadow relative border-dashed border-outline-variant border-2 hover:border-solid hover:border-primary/50">
+<div class="flex justify-between items-start mb-6">
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface line-clamp-2 pr-2">Q4 Marketing Site</h4>
+<!-- Status Pill: Planning -->
+<div class="px-2 py-1 rounded-md bg-surface-variant text-on-surface-variant font-label-sm text-label-sm flex items-center shrink-0 border border-outline-variant/50">
+                            Planning
+                        </div>
+</div>
+<div class="flex flex-col border-t border-outline-variant/30 pt-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Proposed Start</span>
+<span class="font-body-md text-body-md text-on-surface">Nov 01, 2023</span>
+</div>
+</div>
+</div>
+<!-- Add Project Action -->
+<button class="mt-4 w-full bg-surface-container-lowest border border-dashed border-outline-variant rounded-xl p-4 flex items-center justify-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:border-primary hover:bg-primary-container/5 transition-all duration-200">
+<span class="material-symbols-outlined">add</span>
+                Add New Project
+            </button>
+</div>
+</main>
+<!-- Bottom Nav Bar (Mobile only) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe bg-surface border-t border-outline-variant shadow-sm z-50 md:hidden pb-safe">
+<a class="flex flex-col items-center justify-center text-secondary w-full h-full relative group hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Active Tab: Clients -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold w-full h-full relative bg-primary-container/5" href="#">
+<div class="nav-active-indicator"></div>
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-sm text-label-sm">Clients</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary w-full h-full relative group hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1">assignment</span>
+<span class="font-label-sm text-label-sm">Projects</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary w-full h-full relative group hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1">receipt_long</span>
+<span class="font-label-sm text-label-sm">Invoices</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary w-full h-full relative group hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</nav>
+</body></html>

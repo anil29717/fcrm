@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - FreelancePro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f1f4f1",
+                        "secondary": "#47645c",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#0e6e5c",
+                        "surface-dim": "#d7dbd8",
+                        "on-primary-container": "#9bedd6",
+                        "tertiary-fixed": "#ffdad2",
+                        "tertiary": "#773729",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005143",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d3130",
+                        "primary-fixed-dim": "#84d6c0",
+                        "primary-fixed": "#a0f2db",
+                        "on-primary-fixed": "#002019",
+                        "inverse-on-surface": "#eef2ee",
+                        "tertiary-fixed-dim": "#ffb4a3",
+                        "secondary-fixed-dim": "#adcdc3",
+                        "inverse-primary": "#84d6c0",
+                        "on-secondary-fixed-variant": "#2f4c44",
+                        "surface-container": "#ebefec",
+                        "on-tertiary-fixed-variant": "#733426",
+                        "on-secondary-fixed": "#02201a",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#066b59",
+                        "on-background": "#181c1b",
+                        "surface": "#f7faf7",
+                        "background": "#f7faf7",
+                        "secondary-fixed": "#c9eade",
+                        "surface-bright": "#f7faf7",
+                        "secondary-container": "#c9eade",
+                        "primary": "#005445",
+                        "on-secondary-container": "#4d6a61",
+                        "surface-variant": "#e0e3e0",
+                        "outline": "#6f7975",
+                        "on-tertiary-container": "#ffd4cb",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#bec9c4",
+                        "tertiary-container": "#944e3e",
+                        "on-surface": "#181c1b",
+                        "surface-container-high": "#e5e9e6",
+                        "surface-container-highest": "#e0e3e0",
+                        "on-surface-variant": "#3e4945",
+                        "on-tertiary-fixed": "#3a0a02"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-gap": "16px",
+                        "unit": "4px",
+                        "container-padding": "20px",
+                        "section-margin": "32px",
+                        "nav-height": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .px-margin-safe { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col pt-14 pb-20 md:pb-0">
+<!-- TopAppBar (Mobile only for layout structure, though design system specifies it acts as top anchor) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-safe h-14 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-3 pl-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="business_center">business_center</span>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">FreelancePro</span>
+</div>
+<div class="pr-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-primary">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-2xl mx-auto px-container-padding py-section-margin">
+<div class="mb-section-margin">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your freelance business preferences and security.</p>
+</div>
+<!-- Settings Groups - Card Based Architecture -->
+<div class="space-y-card-gap">
+<!-- Group 1: Business Profile -->
+<div class="bg-surface-container-lowest rounded-xl border border-black/8 overflow-hidden">
+<div class="px-5 py-4 border-b border-black/5 bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm text-primary">Account</h2>
+</div>
+<div class="divide-y divide-outline-variant/30">
+<button class="w-full flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+</div>
+<div class="text-left">
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Business Profile</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Edit company details &amp; tax info</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Group 2: Security -->
+<div class="bg-surface-container-lowest rounded-xl border border-black/8 overflow-hidden">
+<div class="px-5 py-4 border-b border-black/5 bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm text-primary">Security</h2>
+</div>
+<div class="divide-y divide-outline-variant/30">
+<button class="w-full flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+<div class="text-left">
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Change PIN</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Update your app access code</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
+</div>
+<div class="text-left">
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Biometric Login</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Enable Face ID / Touch ID</p>
+</div>
+</div>
+<div class="relative inline-block w-12 h-6 rounded-full bg-primary/30">
+<div class="absolute left-1 top-1 bg-primary w-4 h-4 rounded-full transition-transform transform translate-x-6"></div>
+</div>
+</button>
+</div>
+</div>
+<!-- Group 3: Data -->
+<div class="bg-surface-container-lowest rounded-xl border border-black/8 overflow-hidden">
+<div class="px-5 py-4 border-b border-black/5 bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm text-primary">System</h2>
+</div>
+<div class="divide-y divide-outline-variant/30">
+<button class="w-full flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+</div>
+<div class="text-left">
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">Backup &amp; Data</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage local and cloud backups</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</div>
+<div class="text-left">
+<h3 class="font-body-lg text-body-lg font-medium text-on-surface">About</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Version 2.4.1</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Destructive Action -->
+<div class="pt-4 pb-8 flex justify-center">
+<button class="px-6 py-3 rounded-xl border border-error text-error hover:bg-error/10 transition-colors font-label-md text-label-md">
+                    Log Out
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe bg-surface dark:bg-surface border-t border-outline-variant dark:border-outline shadow-sm z-50">
+<a class="flex flex-col items-center justify-center w-full h-full text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container transition-colors rounded-full mx-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container transition-colors rounded-full mx-1" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md mt-1">Clients</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-secondary dark:text-secondary-fixed-dim hover:bg-secondary-container dark:hover:bg-secondary-container transition-colors rounded-full mx-1" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md mt-1">Projects</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-primary dark:text-primary-fixed scale-90 transition-transform duration-150 rounded-full mx-1 relative" href="#">
+<div class="absolute top-0 w-8 h-1 bg-primary rounded-b-full"></div>
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<!-- SideNav (Desktop - Simulated for responsive layout completeness if we were to expand) -->
+<div class="hidden md:flex flex-col fixed left-0 top-14 bottom-0 w-64 bg-surface border-r border-outline-variant p-4 gap-2 z-40">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary-container text-on-secondary-container transition-colors font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<!-- Desktop content adjustment -->
+<style>
+        @media (min-width: 768px) {
+            main {
+                margin-left: 16rem; /* 64 * 4px = 256px for sidebar */
+                max-width: calc(100% - 16rem);
+            }
+        }
+    </style>
+</body></html>

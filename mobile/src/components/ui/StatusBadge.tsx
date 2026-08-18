@@ -6,7 +6,7 @@ type StatusType =
   | 'paid' | 'pending' | 'partial' | 'overdue'
   | 'draft' | 'sent' | 'cancelled'
   | 'in_progress' | 'active' | 'completed' | 'on_hold' | 'not_started' | 'cancelled'
-  | 'invoiced' | 'pending_approval' | 'approved';
+  | 'invoiced' | 'pending_approval' | 'approved' | 'unpaid';
 
 const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string }> = {
   paid: { bg: '#D1FAE5', text: colors.paid, label: 'Paid' },
@@ -24,6 +24,7 @@ const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string }>
   invoiced: { bg: '#DBEAFE', text: colors.partial, label: 'Invoiced' },
   pending_approval: { bg: '#FEF3C7', text: colors.pending, label: 'Pending Approval' },
   approved: { bg: '#D1FAE5', text: colors.paid, label: 'Approved' },
+  unpaid: { bg: '#FEF3C7', text: colors.pending, label: 'Unpaid' },
 };
 
 interface StatusBadgeProps {

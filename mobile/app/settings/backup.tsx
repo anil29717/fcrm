@@ -53,7 +53,7 @@ export default function BackupScreen() {
         [
           result.backupId ? `Backup: ${result.backupId}` : null,
           result.appVersion ? `From app version: ${result.appVersion}` : null,
-          `Imported ${result.clients} clients, ${result.projects} projects, ${result.invoices} invoices.`,
+          `Imported ${result.clients} clients, ${result.projects} projects, ${result.invoices} invoices, ${result.services} other services.`,
         ].filter(Boolean).join('\n'),
       );
       load();
@@ -70,7 +70,7 @@ export default function BackupScreen() {
   const handleRestore = () => {
     Alert.alert(
       'Restore from file?',
-      'This replaces clients, projects, invoices, and company data on this device with the selected backup JSON. Your PIN stays the same.',
+      'This replaces clients, projects, invoices, other services, and company data on this device with the selected backup JSON. Your PIN stays the same.',
       [
         { text: 'Cancel', style: 'cancel' },
         { text: 'Choose file', style: 'destructive', onPress: () => { void runRestore(); } },

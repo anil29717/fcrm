@@ -3,6 +3,8 @@ import type {
   ChangeRequest,
   Client,
   ClientInput,
+  ClientService,
+  ClientServiceInput,
   Company,
   CompanyProfileInput,
   ComplianceDoc,
@@ -219,6 +221,12 @@ export async function saveClient(data: ClientInput): Promise<number> {
 
 export async function deleteClient(id: number): Promise<void> {
   const db = await getDatabase();
+  try {
+    await db.runAsync('UPDATE invoices SET client_service_id = NULL WHERE client_id = ?', [id]);
+  } catch { /* column may not exist on a mid-migration DB */ }
+  try {
+    await db.runAsync('DELETE FROM client_services WHERE client_id = ?', [id]);
+  } catch { /* table may not exist yet */ }
   await db.runAsync('DELETE FROM clients WHERE id = ?', [id]);
 }
 
@@ -541,17 +549,20 @@ async function addProjectHistory(
 
 // ─── Invoices ────────────────────────────────────────────────────────────────
 
+const INVOICE_SELECT = `SELECT i.*, p.name as project_name,
+       COALESCE(cd.name, cp.name) as client_name
+       FROM invoices i
+       LEFT JOIN projects p ON p.id = i.project_id
+       LEFT JOIN clients cp ON cp.id = p.client_id
+       LEFT JOIN clients cd ON cd.id = i.client_id`;
+
 export async function getInvoices(search = ''): Promise<Invoice[]> {
   const db = await getDatabase();
   const query = search
-    ? `SELECT i.*, p.name as project_name, c.name as client_name FROM invoices i
-       JOIN projects p ON p.id = i.project_id
-       JOIN clients c ON c.id = p.client_id
-       WHERE i.invoice_number LIKE ? OR p.name LIKE ? OR c.name LIKE ?
+    ? `${INVOICE_SELECT}
+       WHERE i.invoice_number LIKE ? OR IFNULL(p.name, '') LIKE ? OR IFNULL(cd.name, IFNULL(cp.name, '')) LIKE ?
        ORDER BY i.date DESC`
-    : `SELECT i.*, p.name as project_name, c.name as client_name FROM invoices i
-       JOIN projects p ON p.id = i.project_id
-       JOIN clients c ON c.id = p.client_id
+    : `${INVOICE_SELECT}
        ORDER BY i.date DESC`;
   const params = search ? [`%${search}%`, `%${search}%`, `%${search}%`] : [];
   return db.getAllAsync<Invoice>(query, params);
@@ -568,9 +579,7 @@ export async function getInvoicesByProject(projectId: number): Promise<Invoice[]
 export async function getInvoice(id: number): Promise<Invoice | null> {
   const db = await getDatabase();
   return db.getFirstAsync<Invoice>(
-    `SELECT i.*, p.name as project_name, c.name as client_name FROM invoices i
-     JOIN projects p ON p.id = i.project_id
-     JOIN clients c ON c.id = p.client_id WHERE i.id = ?`,
+    `${INVOICE_SELECT} WHERE i.id = ?`,
     [id],
   );
 }
@@ -612,9 +621,21 @@ export async function getNextInvoiceNumber(): Promise<string> {
   return generateInvoiceNumber(company.short_code, fy, nextSeq);
 }
 
+async function resolveInvoiceClientId(data: {
+  project_id?: number | null;
+  client_id?: number | null;
+}): Promise<number | null> {
+  if (data.client_id) return data.client_id;
+  if (!data.project_id) return null;
+  const project = await getProject(data.project_id);
+  return project?.client_id ?? null;
+}
+
 export async function saveInvoice(data: {
   id?: number;
-  project_id: number;
+  project_id?: number | null;
+  client_id?: number | null;
+  client_service_id?: number | null;
   invoice_number: string;
   date: string;
   line_items: LineItem[];
@@ -631,12 +652,15 @@ export async function saveInvoice(data: {
   const db = await getDatabase();
   const ts = now();
   const itemsJson = JSON.stringify(data.line_items);
+  const clientId = await resolveInvoiceClientId(data);
   if (data.id) {
     await db.runAsync(
-      `UPDATE invoices SET project_id=?, date=?, line_items=?, subtotal=?, discount=?, discount_type=?,
+      `UPDATE invoices SET project_id=?, client_id=COALESCE(?, client_id), client_service_id=COALESCE(?, client_service_id),
+       date=?, line_items=?, subtotal=?, discount=?, discount_type=?,
        tax=?, tax_percent=?, total=?, status=?, payment_method=?, notes=?, updated_at=? WHERE id=?`,
       [
-        data.project_id, data.date, itemsJson, data.subtotal,
+        data.project_id ?? null, clientId, data.client_service_id ?? null,
+        data.date, itemsJson, data.subtotal,
         data.discount ?? 0, data.discount_type ?? 'amount',
         data.tax ?? 0, data.tax_percent ?? 0, data.total,
         data.status ?? 'draft', data.payment_method ?? null, data.notes ?? null, ts, data.id,
@@ -645,11 +669,12 @@ export async function saveInvoice(data: {
     return data.id;
   }
   const result = await db.runAsync(
-    `INSERT INTO invoices (project_id, invoice_number, date, line_items, subtotal, discount, discount_type,
+    `INSERT INTO invoices (project_id, client_id, client_service_id, invoice_number, date, line_items, subtotal, discount, discount_type,
      tax, tax_percent, total, status, payment_method, notes, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      data.project_id, data.invoice_number, data.date, itemsJson, data.subtotal,
+      data.project_id ?? null, clientId, data.client_service_id ?? null,
+      data.invoice_number, data.date, itemsJson, data.subtotal,
       data.discount ?? 0, data.discount_type ?? 'amount',
       data.tax ?? 0, data.tax_percent ?? 0, data.total,
       data.status ?? 'draft', data.payment_method ?? null, data.notes ?? null, ts, ts,
@@ -659,7 +684,9 @@ export async function saveInvoice(data: {
 }
 
 export async function createInvoice(data: {
-  project_id: number;
+  project_id?: number | null;
+  client_id?: number | null;
+  client_service_id?: number | null;
   date: string;
   line_items: LineItem[];
   subtotal: number;
@@ -672,16 +699,21 @@ export async function createInvoice(data: {
   payment_method?: string;
   notes?: string;
 }): Promise<number> {
+  if (!data.project_id && !data.client_id) {
+    throw new Error('Select a project or client for this invoice');
+  }
   const invoice_number = await getNextInvoiceNumber();
   const id = await saveInvoice({ ...data, invoice_number });
-  await addProjectHistory(
-    data.project_id,
-    'payment',
-    `Invoice ${invoice_number} created`,
-    null,
-    `₹${data.total.toFixed(2)}`,
-    data.status ?? 'draft',
-  );
+  if (data.project_id) {
+    await addProjectHistory(
+      data.project_id,
+      'payment',
+      `Invoice ${invoice_number} created`,
+      null,
+      `₹${data.total.toFixed(2)}`,
+      data.status ?? 'draft',
+    );
+  }
   return id;
 }
 
@@ -751,6 +783,150 @@ export async function saveChangeRequest(data: {
   return result.lastInsertRowId;
 }
 
+// ─── Client other services (one-off work) ────────────────────────────────────
+
+function normalizeServicePayment(data: ClientServiceInput): {
+  payment_status: string;
+  paid_amount: number;
+} {
+  const amount = data.amount;
+  let paid = data.paid_amount ?? 0;
+  if (!Number.isFinite(paid) || paid < 0) paid = 0;
+  let status = data.payment_status ?? 'unpaid';
+  if (status === 'paid' && paid <= 0) paid = amount;
+  if (status === 'unpaid') paid = 0;
+  if (paid <= 0) status = 'unpaid';
+  else if (paid + 0.0001 >= amount) status = 'paid';
+  else status = 'partial';
+  return { payment_status: status, paid_amount: paid };
+}
+
+export async function getClientServices(clientId: number): Promise<ClientService[]> {
+  const db = await getDatabase();
+  return db.getAllAsync<ClientService>(
+    `SELECT s.*, i.invoice_number
+     FROM client_services s
+     LEFT JOIN invoices i ON i.id = s.invoice_id
+     WHERE s.client_id = ?
+     ORDER BY s.service_date DESC, s.id DESC`,
+    [clientId],
+  );
+}
+
+export async function getClientService(id: number): Promise<ClientService | null> {
+  const db = await getDatabase();
+  return db.getFirstAsync<ClientService>(
+    `SELECT s.*, c.name as client_name, i.invoice_number
+     FROM client_services s
+     JOIN clients c ON c.id = s.client_id
+     LEFT JOIN invoices i ON i.id = s.invoice_id
+     WHERE s.id = ?`,
+    [id],
+  );
+}
+
+async function createInvoiceForService(service: {
+  id: number;
+  client_id: number;
+  title: string;
+  description: string | null;
+  amount: number;
+  service_date: string;
+  payment_status: string;
+  paid_amount: number;
+  payment_date: string | null;
+  payment_method: string | null;
+}): Promise<number> {
+  const invoiceStatus = service.payment_status === 'paid'
+    ? 'paid'
+    : service.payment_status === 'partial'
+      ? 'partial'
+      : 'draft';
+  const invoiceId = await createInvoice({
+    project_id: null,
+    client_id: service.client_id,
+    client_service_id: service.id,
+    date: service.service_date,
+    line_items: [{
+      description: service.title,
+      qty: 1,
+      rate: service.amount,
+      amount: service.amount,
+    }],
+    subtotal: service.amount,
+    total: service.amount,
+    status: invoiceStatus,
+    payment_method: service.payment_method ?? undefined,
+    notes: service.description ?? undefined,
+  });
+  if (service.paid_amount > 0) {
+    await savePaymentRecord({
+      invoice_id: invoiceId,
+      amount: service.paid_amount,
+      payment_date: service.payment_date || service.service_date,
+      payment_method: service.payment_method || 'other',
+      notes: 'Recorded with other service',
+    });
+  }
+  const db = await getDatabase();
+  await db.runAsync(
+    'UPDATE client_services SET invoice_id = ?, updated_at = ? WHERE id = ?',
+    [invoiceId, now(), service.id],
+  );
+  return invoiceId;
+}
+
+export async function saveClientService(data: ClientServiceInput): Promise<number> {
+  if (!data.title.trim()) throw new Error('Describe what you did');
+  if (!Number.isFinite(data.amount) || data.amount < 0) throw new Error('Enter a valid amount');
+  const db = await getDatabase();
+  const ts = now();
+  const { payment_status, paid_amount } = normalizeServicePayment(data);
+
+  let serviceId = data.id ?? 0;
+  if (data.id) {
+    await db.runAsync(
+      `UPDATE client_services SET title=?, description=?, amount=?, service_date=?, payment_status=?,
+       paid_amount=?, payment_date=?, payment_method=?, payment_reference=?, notes=?, updated_at=? WHERE id=?`,
+      [
+        data.title.trim(), data.description?.trim() || null, data.amount, data.service_date,
+        payment_status, paid_amount, data.payment_date || null, data.payment_method || null,
+        data.payment_reference?.trim() || null, data.notes?.trim() || null, ts, data.id,
+      ],
+    );
+    serviceId = data.id;
+  } else {
+    const result = await db.runAsync(
+      `INSERT INTO client_services (
+         client_id, title, description, amount, service_date, payment_status, paid_amount,
+         payment_date, payment_method, payment_reference, notes, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        data.client_id, data.title.trim(), data.description?.trim() || null, data.amount, data.service_date,
+        payment_status, paid_amount, data.payment_date || null, data.payment_method || null,
+        data.payment_reference?.trim() || null, data.notes?.trim() || null, ts, ts,
+      ],
+    );
+    serviceId = result.lastInsertRowId;
+  }
+
+  if (data.create_invoice) {
+    const existing = await getClientService(serviceId);
+    if (existing && !existing.invoice_id) {
+      await createInvoiceForService(existing);
+    }
+  }
+  return serviceId;
+}
+
+export async function deleteClientService(id: number): Promise<void> {
+  const db = await getDatabase();
+  try {
+    await db.runAsync('UPDATE invoices SET client_service_id = NULL WHERE client_service_id = ?', [id]);
+  } catch { /* column may not exist on a mid-migration DB */ }
+  await db.runAsync('DELETE FROM client_services WHERE id = ?', [id]);
+}
+
 // ─── Template ────────────────────────────────────────────────────────────────
 
 export async function getTemplateBlocks(): Promise<TemplateBlock[]> {
@@ -799,20 +975,36 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const receivedFromPayments = payments?.count ? (payments.total ?? 0) : 0;
   const receivedFromInvoices = paidInvoices?.total ?? 0;
   const receivedFromMilestones = paidMilestones?.total ?? 0;
-  // Use the strongest available signal without double-counting when possible.
-  const totalReceived = receivedFromPayments > 0
-    ? receivedFromPayments
-    : Math.max(receivedFromInvoices, receivedFromMilestones);
+
+  let serviceTotals = { billed: 0, received: 0, pending: 0 };
+  try {
+    const row = await db.getFirstAsync<{ billed: number; received: number; pending: number }>(
+      `SELECT
+         COALESCE(SUM(amount), 0) as billed,
+         COALESCE(SUM(CASE WHEN invoice_id IS NULL THEN paid_amount ELSE 0 END), 0) as received,
+         COALESCE(SUM(CASE WHEN invoice_id IS NULL AND amount > paid_amount THEN amount - paid_amount ELSE 0 END), 0) as pending
+       FROM client_services`,
+    );
+    if (row) serviceTotals = row;
+  } catch {
+    // table may not exist yet
+  }
 
   const pending = await db.getFirstAsync<{ total: number }>(
     "SELECT COALESCE(SUM(total), 0) as total FROM invoices WHERE status IN ('pending', 'partial', 'sent', 'draft', 'overdue')",
   );
+
+  // Use the strongest available signal without double-counting when possible.
+  const totalReceived = (receivedFromPayments > 0
+    ? receivedFromPayments
+    : Math.max(receivedFromInvoices, receivedFromMilestones)) + (serviceTotals?.received ?? 0);
+
   const invoiced = await db.getFirstAsync<{ total: number }>(
     "SELECT COALESCE(SUM(total), 0) as total FROM invoices WHERE status != 'cancelled'",
   );
 
-  const totalValuation = valuation?.total ?? 0;
-  const totalPending = pending?.total ?? 0;
+  const totalValuation = (valuation?.total ?? 0) + (serviceTotals?.billed ?? 0);
+  const totalPending = (pending?.total ?? 0) + (serviceTotals?.pending ?? 0);
   const totalInvoiced = invoiced?.total ?? 0;
   const amountRemaining = Math.max(0, totalValuation - totalReceived);
   const collectionRate = totalValuation > 0
@@ -837,8 +1029,11 @@ export async function getRecentActivity(): Promise<ActivityItem[]> {
   const items: ActivityItem[] = [];
 
   const invoices = await db.getAllAsync<{ id: number; invoice_number: string; client_name: string; updated_at: string }>(
-    `SELECT i.id, i.invoice_number, c.name as client_name, i.updated_at
-     FROM invoices i JOIN projects p ON p.id = i.project_id JOIN clients c ON c.id = p.client_id
+    `SELECT i.id, i.invoice_number, COALESCE(cd.name, cp.name) as client_name, i.updated_at
+     FROM invoices i
+     LEFT JOIN projects p ON p.id = i.project_id
+     LEFT JOIN clients cp ON cp.id = p.client_id
+     LEFT JOIN clients cd ON cd.id = i.client_id
      ORDER BY i.updated_at DESC LIMIT 5`,
   );
   for (const inv of invoices) {
@@ -860,6 +1055,24 @@ export async function getRecentActivity(): Promise<ActivityItem[]> {
       description: h.description,
       created_at: h.created_at,
     });
+  }
+
+  try {
+    const services = await db.getAllAsync<{ id: number; title: string; client_name: string; created_at: string }>(
+      `SELECT s.id, s.title, c.name as client_name, s.created_at
+       FROM client_services s JOIN clients c ON c.id = s.client_id
+       ORDER BY s.created_at DESC LIMIT 5`,
+    );
+    for (const s of services) {
+      items.push({
+        id: `svc-${s.id}`,
+        type: 'service',
+        description: `${s.title} — ${s.client_name}`,
+        created_at: s.created_at,
+      });
+    }
+  } catch {
+    // table may not exist on older DBs mid-migration
   }
 
   return items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 8);
@@ -901,6 +1114,9 @@ export async function exportBackupData(): Promise<object> {
   try { invoiceSequences = await db.getAllAsync('SELECT * FROM invoice_sequences'); } catch { /* */ }
   try { templateBlocks = await db.getAllAsync('SELECT * FROM invoice_template_blocks'); } catch { /* */ }
 
+  let clientServices: object[] = [];
+  try { clientServices = await db.getAllAsync('SELECT * FROM client_services'); } catch { /* */ }
+
   return {
     exported_at: now(),
     company,
@@ -917,6 +1133,7 @@ export async function exportBackupData(): Promise<object> {
     project_history: projectHistory,
     invoice_sequences: invoiceSequences,
     invoice_template_blocks: templateBlocks,
+    client_services: clientServices,
   };
 }
 
@@ -958,7 +1175,7 @@ async function insertRows(
     if (!required.every((k) => row[k] != null && String(row[k]).length > 0)) continue;
     if (ensureTimestamps) {
       if (row.created_at == null) row.created_at = now();
-      if (table === 'clients' || table === 'projects' || table === 'invoices') {
+      if (table === 'clients' || table === 'projects' || table === 'invoices' || table === 'client_services') {
         if (row.updated_at == null) row.updated_at = now();
       }
     }
@@ -989,11 +1206,13 @@ export async function importBackupData(payload: {
   invoice_sequences?: Row[];
   invoice_template_blocks?: Row[];
   env_values?: Row[];
-}): Promise<{ clients: number; projects: number; invoices: number }> {
+  client_services?: Row[];
+}): Promise<{ clients: number; projects: number; invoices: number; services: number }> {
   const db = await getDatabase();
   let clients = 0;
   let projects = 0;
   let invoices = 0;
+  let services = 0;
 
   await db.execAsync('PRAGMA foreign_keys = OFF;');
   try {
@@ -1008,6 +1227,7 @@ export async function importBackupData(payload: {
         'project_phases',
         'change_requests',
         'milestones',
+        'client_services',
         'invoices',
         'projects',
         'contact_persons',
@@ -1043,7 +1263,21 @@ export async function importBackupData(payload: {
       projects = await insertRows(db, 'projects', payload.projects ?? [], ['name', 'client_id'], true);
       await insertRows(db, 'project_phases', payload.phases ?? [], ['project_id', 'title'], false);
       await insertRows(db, 'phase_tasks', payload.phase_tasks ?? [], ['phase_id', 'title'], false);
-      invoices = await insertRows(db, 'invoices', payload.invoices ?? [], ['project_id', 'invoice_number'], true);
+      services = await insertRows(db, 'client_services', payload.client_services ?? [], ['client_id', 'title'], true);
+      invoices = await insertRows(
+        db,
+        'invoices',
+        (payload.invoices ?? []).filter((row) => row.invoice_number != null && (row.project_id != null || row.client_id != null)),
+        ['invoice_number'],
+        true,
+      );
+      try {
+        await db.runAsync(`
+          UPDATE invoices SET client_id = (
+            SELECT p.client_id FROM projects p WHERE p.id = invoices.project_id
+          ) WHERE client_id IS NULL AND project_id IS NOT NULL
+        `);
+      } catch { /* older schema without client_id */ }
       await insertRows(db, 'milestones', payload.milestones ?? [], ['project_id', 'title'], true);
       await insertRows(db, 'change_requests', payload.change_requests ?? [], ['project_id', 'description'], true);
       await insertRows(db, 'payment_records', payload.payment_records ?? [], ['invoice_id', 'amount'], true);
@@ -1071,7 +1305,7 @@ export async function importBackupData(payload: {
   }
 
   await saveBackupLog('success', 'Data restored from backup file.');
-  return { clients, projects, invoices };
+  return { clients, projects, invoices, services };
 }
 
 // ─── Env Values ──────────────────────────────────────────────────────────────

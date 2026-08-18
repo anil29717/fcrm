@@ -31,6 +31,11 @@ export function formatDate(dateStr: string): string {
   });
 }
 
+export function invoiceScopeLabel(invoice: { project_name?: string | null }): string {
+  const name = invoice.project_name?.trim();
+  return name ? name : 'Other service';
+}
+
 export function formatRelativeTime(dateStr: string): string {
   const date = new Date(dateStr);
   const diff = Date.now() - date.getTime();

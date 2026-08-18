@@ -34,6 +34,7 @@ export type LocalBackupPayload = {
   project_history?: Record<string, unknown>[];
   invoice_sequences?: Record<string, unknown>[];
   invoice_template_blocks?: Record<string, unknown>[];
+  client_services?: Record<string, unknown>[];
 };
 
 function getExportsDir(): string {
@@ -108,6 +109,7 @@ export async function restoreEverythingFromFile(): Promise<{
   clients: number;
   projects: number;
   invoices: number;
+  services: number;
   appVersion: string | null;
   backupId: string | null;
 }> {

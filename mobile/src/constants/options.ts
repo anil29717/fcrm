@@ -173,3 +173,9 @@ export const SIGNATURE_MODE_OPTIONS = [
   { label: 'Authorized signature', value: 'authorized', icon: 'draw' as const },
   { label: 'Computer generated', value: 'computer_generated', icon: 'computer' as const },
 ];
+
+export const SERVICE_PAYMENT_STATUS_OPTIONS = [
+  { label: 'Unpaid', value: 'unpaid', icon: 'schedule' as const },
+  { label: 'Paid', value: 'paid', icon: 'check-circle' as const },
+  { label: 'Partial', value: 'partial', icon: 'payments' as const },
+];

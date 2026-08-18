@@ -150,5 +150,110 @@ export async function runMigrations(db: SQLite.SQLiteDatabase): Promise<void> {
       created_at TEXT NOT NULL,
       FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS client_services (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      client_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT,
+      amount REAL NOT NULL,
+      service_date TEXT NOT NULL,
+      payment_status TEXT DEFAULT 'unpaid',
+      paid_amount REAL DEFAULT 0,
+      payment_date TEXT,
+      payment_method TEXT,
+      payment_reference TEXT,
+      invoice_id INTEGER,
+      notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+      FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL
+    );
   `);
+
+  await migrateInvoicesForClientServices(db);
+}
+
+async function tableHasColumn(
+  db: SQLite.SQLiteDatabase,
+  table: string,
+  column: string,
+): Promise<boolean> {
+  const cols = await db.getAllAsync<{ name: string }>(`PRAGMA table_info(${table})`);
+  return cols.some((c) => c.name === column);
+}
+
+/** Make invoices.project_id optional and attach client / other-service links. */
+async function migrateInvoicesForClientServices(db: SQLite.SQLiteDatabase): Promise<void> {
+  if (await tableHasColumn(db, 'invoices', 'client_id')) return;
+
+  const cols = await db.getAllAsync<{ name: string }>('PRAGMA table_info(invoices)');
+  const names = new Set(cols.map((c) => c.name));
+  const col = (name: string, fallback: string) => (names.has(name) ? `i.${name}` : fallback);
+
+  await db.execAsync('PRAGMA foreign_keys = OFF;');
+  try {
+    await db.execAsync('DROP TABLE IF EXISTS invoices_v2;');
+    await db.execAsync(`
+      CREATE TABLE invoices_v2 (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        project_id INTEGER,
+        client_id INTEGER,
+        client_service_id INTEGER,
+        invoice_number TEXT NOT NULL UNIQUE,
+        date TEXT NOT NULL,
+        line_items TEXT NOT NULL,
+        subtotal REAL NOT NULL,
+        discount REAL DEFAULT 0,
+        discount_type TEXT DEFAULT 'amount',
+        tax REAL DEFAULT 0,
+        tax_percent REAL DEFAULT 0,
+        total REAL NOT NULL,
+        status TEXT DEFAULT 'pending',
+        payment_method TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (project_id) REFERENCES projects(id),
+        FOREIGN KEY (client_id) REFERENCES clients(id)
+      );
+    `);
+
+    await db.execAsync(`
+      INSERT INTO invoices_v2 (
+        id, project_id, client_id, client_service_id, invoice_number, date, line_items,
+        subtotal, discount, discount_type, tax, tax_percent, total, status,
+        payment_method, notes, created_at, updated_at
+      )
+      SELECT
+        i.id,
+        i.project_id,
+        p.client_id,
+        NULL,
+        i.invoice_number,
+        i.date,
+        i.line_items,
+        i.subtotal,
+        ${col('discount', '0')},
+        ${col('discount_type', "'amount'")},
+        i.tax,
+        ${col('tax_percent', '0')},
+        i.total,
+        i.status,
+        ${col('payment_method', 'NULL')},
+        i.notes,
+        i.created_at,
+        i.updated_at
+      FROM invoices i
+      LEFT JOIN projects p ON p.id = i.project_id;
+    `);
+
+    await db.execAsync(`
+      DROP TABLE invoices;
+      ALTER TABLE invoices_v2 RENAME TO invoices;
+    `);
+  } finally {
+    await db.execAsync('PRAGMA foreign_keys = ON;');
+  }
 }

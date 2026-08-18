@@ -3,6 +3,7 @@ export type ProjectStatus = 'not_started' | 'active' | 'on_hold' | 'completed' |
 export type MilestoneStatus = 'pending' | 'invoiced' | 'paid' | 'overdue';
 export type PhaseStatus = 'pending' | 'in_progress' | 'completed' | 'on_hold';
 export type ChangeRequestStatus = 'pending_approval' | 'approved' | 'invoiced';
+export type ClientServicePaymentStatus = 'unpaid' | 'paid' | 'partial';
 
 export interface Company {
   id: number;
@@ -152,9 +153,31 @@ export interface LineItem {
   amount: number;
 }
 
+export interface ClientService {
+  id: number;
+  client_id: number;
+  title: string;
+  description: string | null;
+  amount: number;
+  service_date: string;
+  payment_status: ClientServicePaymentStatus | string;
+  paid_amount: number;
+  payment_date: string | null;
+  payment_method: string | null;
+  payment_reference: string | null;
+  invoice_id: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  client_name?: string;
+  invoice_number?: string | null;
+}
+
 export interface Invoice {
   id: number;
-  project_id: number;
+  project_id: number | null;
+  client_id: number | null;
+  client_service_id: number | null;
   invoice_number: string;
   date: string;
   line_items: string;
@@ -241,7 +264,7 @@ export interface DashboardStats {
 
 export interface ActivityItem {
   id: string;
-  type: 'invoice' | 'phase' | 'client' | 'project';
+  type: 'invoice' | 'phase' | 'client' | 'project' | 'service';
   description: string;
   created_at: string;
 }
@@ -307,4 +330,20 @@ export interface ProjectInput {
   tags?: string[];
   status?: string;
   initial_phases?: string[];
+}
+
+export interface ClientServiceInput {
+  id?: number;
+  client_id: number;
+  title: string;
+  description?: string;
+  amount: number;
+  service_date: string;
+  payment_status?: ClientServicePaymentStatus;
+  paid_amount?: number;
+  payment_date?: string;
+  payment_method?: string;
+  payment_reference?: string;
+  notes?: string;
+  create_invoice?: boolean;
 }

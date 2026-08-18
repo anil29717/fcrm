@@ -40,7 +40,7 @@ const BLOCK_RENDERERS: Record<
     <div class="block">
       <div class="block-title">Bill To</div>
       <div><strong>${esc(ctx.invoice.client_name ?? '')}</strong></div>
-      <div>Project: ${esc(ctx.invoice.project_name ?? '')}</div>
+      <div>${esc(ctx.invoice.project_name ? `Project: ${ctx.invoice.project_name}` : 'Other service')}</div>
     </div>`,
   payment_details: (ctx) => {
     const c = ctx.company;

@@ -78,18 +78,45 @@ CREATE TABLE IF NOT EXISTS project_history (
 
 CREATE TABLE IF NOT EXISTS invoices (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  project_id INTEGER NOT NULL,
+  project_id INTEGER,
+  client_id INTEGER,
+  client_service_id INTEGER,
   invoice_number TEXT NOT NULL UNIQUE,
   date TEXT NOT NULL,
   line_items TEXT NOT NULL,
   subtotal REAL NOT NULL,
+  discount REAL DEFAULT 0,
+  discount_type TEXT DEFAULT 'amount',
   tax REAL DEFAULT 0,
+  tax_percent REAL DEFAULT 0,
   total REAL NOT NULL,
   status TEXT DEFAULT 'pending',
+  payment_method TEXT,
   notes TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
-  FOREIGN KEY (project_id) REFERENCES projects(id)
+  FOREIGN KEY (project_id) REFERENCES projects(id),
+  FOREIGN KEY (client_id) REFERENCES clients(id)
+);
+
+CREATE TABLE IF NOT EXISTS client_services (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  client_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  amount REAL NOT NULL,
+  service_date TEXT NOT NULL,
+  payment_status TEXT DEFAULT 'unpaid',
+  paid_amount REAL DEFAULT 0,
+  payment_date TEXT,
+  payment_method TEXT,
+  payment_reference TEXT,
+  invoice_id INTEGER,
+  notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+  FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS milestones (

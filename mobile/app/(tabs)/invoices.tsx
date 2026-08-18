@@ -15,7 +15,7 @@ import { ListScreenLayout } from '../../src/components/ui/ScreenLayout';
 import { SearchField } from '../../src/components/ui/SearchField';
 import { getInvoices } from '../../src/db/queries';
 import type { Invoice } from '../../src/types';
-import { formatCurrency, formatDate } from '../../src/utils/format';
+import { formatCurrency, formatDate, invoiceScopeLabel } from '../../src/utils/format';
 import { colors, spacing, typography, radius } from '../../src/theme';
 
 export default function InvoicesScreen() {
@@ -85,7 +85,7 @@ export default function InvoicesScreen() {
               <Text style={styles.number}>{item.invoice_number}</Text>
               <StatusBadge status={item.status as 'paid' | 'pending' | 'partial' | 'overdue'} />
             </View>
-            <Text style={styles.project}>{item.project_name} — {item.client_name}</Text>
+            <Text style={styles.project}>{invoiceScopeLabel(item)} — {item.client_name}</Text>
             <View style={styles.cardFooter}>
               <Text style={styles.date}>{formatDate(item.date)}</Text>
               <Text style={styles.total}>{formatCurrency(item.total)}</Text>

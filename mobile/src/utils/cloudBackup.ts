@@ -87,6 +87,7 @@ export type BackupPayload = {
   phases?: Record<string, unknown>[];
   contact_persons?: Record<string, unknown>[];
   env_values?: Record<string, unknown>[];
+  client_services?: Record<string, unknown>[];
 };
 
 /** Fetch the latest backup document from MongoDB Atlas Data API. */

@@ -14,7 +14,7 @@ import { FormSection } from '../../src/components/forms/FormSection';
 import { INVOICE_STATUS_OPTIONS, PAYMENT_METHOD_OPTIONS } from '../../src/constants/options';
 import { getInvoice, saveInvoice, getPaymentRecords, savePaymentRecord } from '../../src/db/queries';
 import type { Invoice, LineItem, InvoiceStatus, PaymentRecord } from '../../src/types';
-import { formatCurrency, formatDate } from '../../src/utils/format';
+import { formatCurrency, formatDate, invoiceScopeLabel } from '../../src/utils/format';
 import { shareInvoicePdf, previewInvoicePdf } from '../../src/utils/invoicePdf';
 import { colors, spacing, typography } from '../../src/theme';
 
@@ -47,6 +47,8 @@ export default function InvoiceDetailScreen() {
     await saveInvoice({
       id: invoice.id,
       project_id: invoice.project_id,
+      client_id: invoice.client_id,
+      client_service_id: invoice.client_service_id,
       invoice_number: invoice.invoice_number,
       date: invoice.date,
       line_items: items,
@@ -133,7 +135,7 @@ export default function InvoiceDetailScreen() {
         <MaterialIcons name="receipt-long" size={28} color={colors.primary} />
         <View style={styles.headerText}>
           <Text style={styles.number}>{invoice.invoice_number}</Text>
-          <Text style={styles.meta}>{invoice.client_name} · {invoice.project_name}</Text>
+          <Text style={styles.meta}>{invoice.client_name} · {invoiceScopeLabel(invoice)}</Text>
           <Text style={styles.date}>{formatDate(invoice.date)}</Text>
         </View>
         <StatusBadge status={invoice.status as InvoiceStatus} />

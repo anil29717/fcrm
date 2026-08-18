@@ -25,6 +25,7 @@ const ACTIVITY_ICONS: Record<ActivityItem['type'], keyof typeof MaterialIcons.gl
   phase: 'play-arrow',
   client: 'person-add',
   project: 'folder',
+  service: 'build',
 };
 
 export default function DashboardScreen() {

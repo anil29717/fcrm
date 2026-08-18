@@ -23,7 +23,7 @@ export default function RestoreScreen() {
         [
           result.backupId ? `Backup: ${result.backupId}` : null,
           result.appVersion ? `From app version: ${result.appVersion}` : null,
-          `Imported ${result.clients} clients, ${result.projects} projects, ${result.invoices} invoices.`,
+          `Imported ${result.clients} clients, ${result.projects} projects, ${result.invoices} invoices, ${result.services} other services.`,
         ].filter(Boolean).join('\n'),
         [{ text: 'Continue', onPress: () => router.replace('/(tabs)') }],
       );

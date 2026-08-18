@@ -29,6 +29,8 @@ export default function RootLayout() {
             <Stack.Screen name="clients/new" options={stackScreen('New Client')} />
             <Stack.Screen name="clients/edit/[id]" options={stackScreen('Edit Client')} />
             <Stack.Screen name="clients/[id]" options={stackScreen('Client Details')} />
+            <Stack.Screen name="clients/services/new" options={stackScreen('Other Service')} />
+            <Stack.Screen name="clients/services/[id]" options={stackScreen('Other Service')} />
             <Stack.Screen name="projects/new" options={stackScreen('New Project')} />
             <Stack.Screen name="projects/edit/[id]" options={stackScreen('Edit Project')} />
             <Stack.Screen name="projects/[id]" options={{ headerShown: false }} />
